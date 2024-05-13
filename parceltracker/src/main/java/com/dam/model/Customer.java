@@ -20,6 +20,6 @@ public class Customer extends User{
         super(username, password, Roles.ROLE_CUSTOMER, userInfo);
     }
 
-    private List<Packet> parckets;
+    private List<Packet> packets;
     
 }
