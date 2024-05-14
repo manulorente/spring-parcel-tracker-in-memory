@@ -3,6 +3,7 @@ package com.dam.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dam.model.User;
@@ -11,6 +12,7 @@ import com.dam.repository.UserRepository;
 @Service
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {

@@ -1,30 +1,31 @@
-package com.dam.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.dam.model.Customer;
 import com.dam.model.User;
-import com.dam.model.UserInfo;
+import com.dam.model.AddressInfo;
 import com.dam.repository.UserRepository;
 
-@SpringBootTest
+@DataJpaTest
 public class UserRepositoryIntegrationTest {
 
-    @Autowired
+    @MockBean
     private UserRepository userRepository;
 
     @Test
     public void testSave() {
+
         // Create a new user
-        Customer customer = new Customer("customer", "password", new UserInfo());
+        Customer customer = new Customer("customer", "password", new AddressInfo());
 
         // Save the user
-        User savedUser = userRepository.save(customer);
+        User savedUser = this.userRepository.save(customer);
 
         // Verify if the user is present and its attributes are correct
         assertNotNull(savedUser);

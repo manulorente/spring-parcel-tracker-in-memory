@@ -51,6 +51,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -79,11 +80,12 @@
         </dependency>                         
     </dependencies>
     <build>
+        <testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+            </plugin>         
         </plugins>
     </build>
 

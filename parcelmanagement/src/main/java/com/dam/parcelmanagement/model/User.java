@@ -1,13 +1,12 @@
-package com.dam.model;
+package com.dam.parcelmanagement.model;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
-
 
 @MappedSuperclass
 @Data
@@ -21,16 +20,12 @@ public abstract class User {
 
     private String password;
 
-    private Roles rol;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    @OneToOne(cascade = CascadeType.ALL) 
-    private AddressInfo userInfo;
-
-    public User(String username, String password, Roles rol, AddressInfo userInfo) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.rol = rol;
-        this.userInfo = userInfo;
     }
     
 }

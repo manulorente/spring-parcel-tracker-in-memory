@@ -3,23 +3,23 @@ package com.dam.model;
 import java.util.List;
 
 import jakarta.persistence.Entity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 @Entity
-@Setter @Getter @ToString
+@Table(name = "users_customer")
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Customer extends User{
 
-    public Customer() {
-        super();
-        this.setRol(Roles.ROLE_CUSTOMER);
-    }
-
-    public Customer(String username, String password, UserInfo userInfo) {
+    public Customer(String username, String password, AddressInfo userInfo) {
         super(username, password, Roles.ROLE_CUSTOMER, userInfo);
     }
 
+    @OneToMany(mappedBy = "id")
     private List<Packet> packets;
     
 }
