@@ -1,4 +1,4 @@
-package com.dam.model;
+package com.dam.parcelmanagement.model;
 
 public enum PacketType {
     ENVELOPE,

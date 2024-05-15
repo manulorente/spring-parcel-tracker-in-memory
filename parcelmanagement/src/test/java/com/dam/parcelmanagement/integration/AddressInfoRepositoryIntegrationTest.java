@@ -3,32 +3,26 @@ package com.dam.parcelmanagement.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.dam.parcelmanagement.model.AddressInfo;
-import com.dam.parcelmanagement.repository.AddressInfoRepository;
+import com.dam.parcelmanagement.model.Address;
+import com.dam.parcelmanagement.repository.AddressRepository;
 
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@Transactional
 class AddressInfoRepositoryIntegrationTest {
 
 	@Autowired
-	private AddressInfoRepository addressInfoRepository;
-
-	@BeforeEach
-	public void setUp() {
-		this.addressInfoRepository.deleteAll();
-	}
+	private AddressRepository addressRepository;
 
 	@Test
-	@Transactional
     public void testSave() {
 
-        AddressInfo addressInfo = new AddressInfo();
+        Address addressInfo = new Address();
         addressInfo.setEmail("test@test.com");
         addressInfo.setFirstName("John");
         addressInfo.setLastName("Doe");
@@ -37,9 +31,9 @@ class AddressInfoRepositoryIntegrationTest {
         addressInfo.setZipCode("12345");
         addressInfo.setCountry("USA");
 
-        AddressInfo savedAddressInfo = this.addressInfoRepository.save(addressInfo);
+        Address savedAddressInfo = this.addressRepository.save(addressInfo);
 
-        AddressInfo retrievedAddressInfo = addressInfoRepository.findById(savedAddressInfo.getId()).orElse(null);
+        Address retrievedAddressInfo = addressRepository.findById(savedAddressInfo.getId()).orElse(null);
         assertNotNull(retrievedAddressInfo);
 
         assertEquals(savedAddressInfo.getEmail(), retrievedAddressInfo.getEmail());
@@ -52,29 +46,25 @@ class AddressInfoRepositoryIntegrationTest {
     }
 
 	@Test
-	@Transactional
 	public void testFindById() {
-		AddressInfo addressInfo = new AddressInfo();
-		addressInfo.setId(1L);
+		Address addressInfo = new Address();
 
-		AddressInfo savedAddressInfo = this.addressInfoRepository.save(addressInfo);
-		AddressInfo retrievedAddressInfo = addressInfoRepository.findById(savedAddressInfo.getId()).orElse(null);
+		Address savedAddressInfo = this.addressRepository.save(addressInfo);
+		Address retrievedAddressInfo = addressRepository.findById(savedAddressInfo.getId()).orElse(null);
 
 		assertNotNull(retrievedAddressInfo);
-		assertEquals(savedAddressInfo.getId(), retrievedAddressInfo.getId());
+		assertEquals(savedAddressInfo, retrievedAddressInfo);
 
 	}
 
 	@Test
-	@Transactional
 	public void testDelete() {
-		AddressInfo addressInfo = new AddressInfo();
-		addressInfo.setId(1L);
+		Address addressInfo = new Address();
 
-		AddressInfo savedAddressInfo = this.addressInfoRepository.save(addressInfo);
-		this.addressInfoRepository.deleteById(savedAddressInfo.getId());
+		Address savedAddressInfo = this.addressRepository.save(addressInfo);
+		this.addressRepository.deleteById(savedAddressInfo.getId());
 
-		AddressInfo retrievedAddressInfo = addressInfoRepository.findById(savedAddressInfo.getId()).orElse(null);
+		Address retrievedAddressInfo = addressRepository.findById(savedAddressInfo.getId()).orElse(null);
 		assertEquals(null, retrievedAddressInfo);
 	}
 

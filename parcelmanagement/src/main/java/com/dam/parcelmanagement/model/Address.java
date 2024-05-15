@@ -1,21 +1,19 @@
-package com.dam.model;
+package com.dam.parcelmanagement.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "address")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AddressInfo {
+public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_seq")
+    @SequenceGenerator(name="address_seq", sequenceName="address_seq", allocationSize = 1)
     private Long id;
 
     private String email;

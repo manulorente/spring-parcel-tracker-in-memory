@@ -7,11 +7,11 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Admin extends User{
+public class Customer extends User{
 
-    public Admin(String username, String password, Address address) {
+    public Customer (String username, String password, Address address) {
         super(username, password, address);
-        this.setRole(UserRole.ADMIN);
+        this.setRole(UserRole.CUSTOMER);
     }
 
 }
