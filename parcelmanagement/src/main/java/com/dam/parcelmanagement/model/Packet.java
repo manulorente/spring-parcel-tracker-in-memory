@@ -14,8 +14,7 @@ import lombok.Data;
 public class Packet {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "packet_seq")
-    @SequenceGenerator(name="packet_seq", sequenceName="packet_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Enumerated(EnumType.STRING)

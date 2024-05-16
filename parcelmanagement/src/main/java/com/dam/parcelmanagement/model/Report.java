@@ -12,8 +12,7 @@ import lombok.Data;
 public class Report {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "report_seq")
-    @SequenceGenerator(name="report_seq", sequenceName="report_seq", allocationSize = 1)    
+    @GeneratedValue(strategy = GenerationType.AUTO) 
     private Long id;
 
     private Long numberOfDeliveries;
