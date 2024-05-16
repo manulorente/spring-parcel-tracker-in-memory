@@ -1,0 +1,81 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "ParcelSystem",
+    "collectionId": "86a1c268-01ed-4545-9a58-506cd830e048",
+    "dateExported": "2024-05-16T02:49:14.719Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "95c97fd8-cd2d-41a7-a764-78cd79365d18",
+            "colId": "86a1c268-01ed-4545-9a58-506cd830e048",
+            "containerId": "",
+            "name": "hello",
+            "url": "http://localhost:8080/",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-05-16T02:34:46.072Z",
+            "modified": "2024-05-16T02:34:46.072Z",
+            "headers": []
+        },
+        {
+            "_id": "b3adf2ce-84bc-4ce5-949b-9bac0616cd6d",
+            "colId": "86a1c268-01ed-4545-9a58-506cd830e048",
+            "containerId": "",
+            "name": "getUsers",
+            "url": "http://localhost:8080/api/users",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-05-16T02:34:46.073Z",
+            "modified": "2024-05-16T02:34:46.073Z",
+            "headers": []
+        },
+        {
+            "_id": "96f8bcda-2218-4ca2-8eb6-ff2a609031e3",
+            "colId": "86a1c268-01ed-4545-9a58-506cd830e048",
+            "containerId": "",
+            "name": "getUserById",
+            "url": "http://localhost:8080/api/users/1",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-05-16T02:34:46.074Z",
+            "modified": "2024-05-16T02:34:46.074Z",
+            "headers": []
+        },
+        {
+            "_id": "7753dc2b-88ba-40d0-bf93-2e1e81b94cdf",
+            "colId": "86a1c268-01ed-4545-9a58-506cd830e048",
+            "containerId": "",
+            "name": "updateUser",
+            "url": "http://localhost:8080/api/users/1",
+            "method": "PUT",
+            "sortNum": 40000,
+            "created": "2024-05-16T02:34:46.075Z",
+            "modified": "2024-05-16T02:45:11.836Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"id\": 1,\n    \"address\": {\n        \"email\": \"Newtest1@example.com\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"street\": \"123 Main St\",\n        \"city\": \"Springfield\",\n        \"zipCode\": \"12345\",\n        \"country\": \"USA\"\n    },\n    \"username\": \"newName\",\n    \"password\": \"$2a$10$3\",\n    \"role\": \"ADMIN\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "4d3c55eb-9b78-4632-ab91-3d2483d3f0bf",
+            "colId": "86a1c268-01ed-4545-9a58-506cd830e048",
+            "containerId": "",
+            "name": "CreateUser",
+            "url": "http://localhost:8080/api/users",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-05-16T02:34:46.076Z",
+            "modified": "2024-05-16T02:48:47.893Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"id\": 4,\n    \"address\": {\n        \"email\": \"test3@example.com\",\n        \"firstName\": \"\",\n        \"lastName\": \"\",\n        \"street\": \"\",\n        \"city\": \"\",\n        \"zipCode\": \"\",\n        \"country\": \"\"\n    },\n    \"username\": \"user4\",\n    \"password\": \"$2a$10$3\",\n    \"role\": \"CUSTOMER\"\n}",
+                "form": []
+            }
+        }
+    ],
+    "ref": "n5aenukq4TlgkoJ1IKFE-EklncmjwVhajE6mA_FHEwi_UrDlEIL8Ieo7q-JY-NKcWCgcqsBAHXsZ3lc8uaO1PQ"
+}

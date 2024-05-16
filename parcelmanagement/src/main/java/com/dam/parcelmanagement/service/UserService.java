@@ -5,10 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dam.parcelmanagement.model.Address;
 import com.dam.parcelmanagement.model.User;
 
-import com.dam.parcelmanagement.repository.AddressRepository;
 import com.dam.parcelmanagement.repository.UserRepository;
 import com.dam.parcelmanagement.exception.ResourceNotFoundException;
 
@@ -18,12 +16,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AddressRepository addressRepository;
 
-    public UserService(UserRepository userRepository, AddressRepository addressRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.addressRepository = addressRepository;
     }
 
     public List<User> getAllUsers() {
@@ -31,34 +26,38 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
+        if (this.userRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
         return this.userRepository.findById(id).orElse(null);
-    }
-
-    public User getUserByUsername(String username) {
-        return this.userRepository.findByUsername(username);
     }
 
     public User updateUser(Long userId, User userDetails) {
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-
+                
         user.setUsername(userDetails.getUsername());
         user.setPassword(userDetails.getPassword());
         user.setRole(userDetails.getRole());
         user.setAddress(userDetails.getAddress());
-
         return this.userRepository.save(user);
-    }
-
-    public void deleteUser(User user) {
-        this.userRepository.delete(user);
     }
 
     public User createUser(User user) {
-        Address address = user.getAddress();
-        address = this.addressRepository.save(address);
-        user.setAddress(address);
+        if (this.userRepository.findById(user.getId()).isPresent()) {
+            throw new ResourceNotFoundException("User already exists with id: " + user.getId());
+        }
+        if (this.userRepository.findByUsername(user.getUsername()) != null) {
+            throw new ResourceNotFoundException("User already exists with username: " + user.getUsername());
+        }
         return this.userRepository.save(user);
     }
     
+    public void deleteUser(User user) {
+        if (this.userRepository.findById(user.getId()).isEmpty()) {
+            throw new ResourceNotFoundException("User not found with id: " + user.getId());
+        }
+        this.userRepository.delete(user);
+    }
+
 }

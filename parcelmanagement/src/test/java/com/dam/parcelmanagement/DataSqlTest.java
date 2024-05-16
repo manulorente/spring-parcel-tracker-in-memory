@@ -1,4 +1,4 @@
-package com.dam.parcelmanagement.integration;
+package com.dam.parcelmanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
-public class DataSqlIntegrationTest {
+public class DataSqlTest {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -16,6 +16,5 @@ public class DataSqlIntegrationTest {
     @Test
     public void  testDataSqlExecution() {
         assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class) == 2;
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM address", Integer.class) == 2;
     }
 }
