@@ -1,21 +1,27 @@
 package com.dam.parcelmanagement.model;
 
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Embeddable
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Packet {
     
     @Enumerated(EnumType.STRING)
-    private PacketType type;
+    private PacketType PacketType;
 
-    private Double weight;
+    private Double packetWeight;
 
-    private Double height;
+    private Double packetHeight;
 
-    private Double width;
+    private Double packetWidth;
 
-    private Double length;
+    private Double packetLength;
 
 }

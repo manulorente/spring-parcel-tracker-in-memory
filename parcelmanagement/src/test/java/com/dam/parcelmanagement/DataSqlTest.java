@@ -14,7 +14,32 @@ public class DataSqlTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    public void  testDataSqlExecution() {
+    public void  testAddressDataSqlExecution() {
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM addresses", Integer.class) == 5;
+    }
+
+    @Test
+    public void  testInvoiceDataSqlExecution() {
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM  invoices", Integer.class) == 2;
+    }
+
+    @Test
+    public void  testUserSqlExecution() {
         assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class) == 2;
+    }
+
+    @Test
+    public void  testDeliveryDataSqlExecution() {
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM deliveries", Integer.class) == 2;
+    }
+
+    @Test
+    public void  testCommentDataSqlExecution() {
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM comments", Integer.class) == 2;
+    }
+
+    @Test
+    public void  testReportDataSqlExecution() {
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reports", Integer.class) == 2;
     }
 }

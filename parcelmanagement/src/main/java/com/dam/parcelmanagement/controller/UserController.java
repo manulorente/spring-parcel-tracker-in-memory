@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -27,31 +27,31 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping("")
     public List<User> getUsers() {
         log.info("Getting all users");
         return this.userService.getAllUsers();
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         log.info("Getting user by id: " + id);
         return this.userService.getUserById(id);
     }
 
-    @PutMapping("users/{id}")
+    @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         log.info("Updating user with id: " + id);
         return this.userService.updateUser(id, userDetails);
     }
 
-    @PostMapping("users")
+    @PostMapping("")
     public User createUser(@RequestBody User user) {
         log.info("Creating user");
         return this.userService.createUser(user);
     }
 
-    @DeleteMapping("users")
+    @DeleteMapping("")
     public void deleteUser(@RequestBody User user) {
         log.info("Deleting user");
         this.userService.deleteUser(user);
