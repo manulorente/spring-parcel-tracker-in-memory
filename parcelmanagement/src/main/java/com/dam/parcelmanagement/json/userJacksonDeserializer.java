@@ -10,6 +10,8 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.dam.parcelmanagement.model.Address;
 import com.dam.parcelmanagement.model.Admin;
 import com.dam.parcelmanagement.model.Customer;
 import com.dam.parcelmanagement.model.User;
@@ -27,10 +29,34 @@ public class userJacksonDeserializer extends JsonDeserializer<User> {
         ObjectCodec objectCodec = jsonParser.getCodec();
         JsonNode jsonNode = objectCodec.readTree(jsonParser);
         
-        if (jsonNode.get("role").asText().equals(UserRole.ADMIN.name())) {
-            return objectCodec.treeToValue(jsonNode, Admin.class);
+        JsonNode roleNode = jsonNode.get("role");
+        String role = (roleNode != null && !(roleNode instanceof NullNode)) ? roleNode.asText() : null;
+
+        if (UserRole.ADMIN.name().equals(role)) {
+            return handleMissingFields(objectCodec.treeToValue(jsonNode, Admin.class));
         } else {
-            return objectCodec.treeToValue(jsonNode, Customer.class);
+            return handleMissingFields(objectCodec.treeToValue(jsonNode, Customer.class));
         }
+    }
+
+    private <T extends User> T handleMissingFields(T user) {
+
+        if (user.getUsername() == null) {
+            user.setUsername("");
+        }
+        
+        if (user.getPassword() == null) {
+            user.setPassword("");
+        }
+        
+        if (user.getAddress() == null) {
+            user.setAddress(new Address());
+        }
+
+        if (user.getRole() == null) {
+            user.setRole(UserRole.CUSTOMER);
+        }
+
+        return user;
     }
 }

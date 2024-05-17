@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dam.parcelmanagement.exception.ResourceNotFoundException;
 import com.dam.parcelmanagement.model.Address;
 import com.dam.parcelmanagement.repository.AddressRepository;
 
@@ -21,14 +22,16 @@ public class AddressService {
 
     public Address getAddressById(Long id) {
         Optional<Address> address = this.addressRepository.findById(id);
-        if (address.isPresent()) {
-            return address.get();
-        } else {
-            return null;
+        if (!address.isPresent()) {
+            throw new ResourceNotFoundException("Address not found with id: " + id);
         }
+        return address.get();
     }
 
     public Address createAddress(Address address) {
+        if (address.getId() != null && this.addressRepository.existsById(address.getId())) {
+            throw new ResourceNotFoundException("Address already exists with id: " + address.getId());
+        }
         return this.addressRepository.save(address);
     }
 
@@ -45,11 +48,14 @@ public class AddressService {
             addressToUpdate.setCountry(addressDetails.getCountry());
             return this.addressRepository.save(addressToUpdate);
         } else {
-            return null;
+            throw new ResourceNotFoundException("Address not found with id: " + id);
         }
     }
 
     public void deleteAddress(Long id) {
+        if (!this.addressRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Address not found with id: " + id);
+        }
         this.addressRepository.deleteById(id);
     }
     

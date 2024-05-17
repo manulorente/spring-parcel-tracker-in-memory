@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
@@ -33,28 +33,28 @@ public class UserController {
         return this.userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        log.info("Getting user by id: " + id);
-        return this.userService.getUserById(id);
+    @GetMapping("/{userName}")
+    public User getUserByUserName(@PathVariable String userName) {
+        log.info("Getting user by username");
+        return this.userService.getUserByUserName(userName);
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        log.info("Updating user with id: " + id);
-        return this.userService.updateUser(id, userDetails);
+    @PutMapping("/")
+    public User updateUser(@RequestBody User userDetails) {
+        log.info("Updating user");
+        return this.userService.updateUser(userDetails);
     }
 
-    @PostMapping("")
-    public User createUser(@RequestBody User user) {
+    @PostMapping("/")
+    public User createUser(@RequestBody User userDetails) {
         log.info("Creating user");
-        return this.userService.createUser(user);
+        return this.userService.createUser(userDetails);
     }
 
-    @DeleteMapping("")
-    public void deleteUser(@RequestBody User user) {
-        log.info("Deleting user");
-        this.userService.deleteUser(user);
+    @DeleteMapping("/")
+    public void deleteUserByUserName(@RequestBody  String userName) {
+        log.info("Deleting user by username");
+        this.userService.deleteUserByUserName(userName);
     }
     
 }

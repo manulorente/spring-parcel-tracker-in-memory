@@ -1,6 +1,7 @@
 package com.dam.parcelmanagement.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AddressService addressService;
+
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -26,19 +30,26 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        return this.userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
-    public User updateUser(Long userId, User userDetails) {
-        User user = this.getUserById(userId);
-                
-        user.setUsername(userDetails.getUsername());
-        user.setPassword(userDetails.getPassword());
-        user.setRole(userDetails.getRole());
-        user.setAddress(userDetails.getAddress());
+    public User getUserByUserName(String userName) {
+        return this.userRepository.findByUsername(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userName));
+    }
 
-        return this.userRepository.save(user);
+    public User updateUser(User userDetails) {
+        User newUser = this.getUserByUserName(userDetails.getUsername());
+
+        this.addressService.updateAddress(userDetails.getAddress().getId(), userDetails.getAddress());
+
+        newUser.setUsername(userDetails.getUsername());
+        newUser.setPassword(userDetails.getPassword());
+        newUser.setRole(userDetails.getRole());
+        newUser.setAddress(userDetails.getAddress());
+
+        return this.userRepository.save(newUser);
     }
 
     public User createUser(User user) {
@@ -51,9 +62,12 @@ public class UserService {
         return this.userRepository.save(user);
     }
     
-    public void deleteUser(User user) {
-        User existingUser = getUserById(user.getId());
-        userRepository.delete(existingUser);
+    public void deleteUserByUserName(String userName) {
+        Optional<User> user = this.userRepository.findByUsername(userName);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found with username: " + userName);
+        }
+        this.userRepository.delete(user.get());
     }
 
 }
