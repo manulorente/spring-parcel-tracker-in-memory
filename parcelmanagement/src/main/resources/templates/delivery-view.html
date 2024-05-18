@@ -6,8 +6,63 @@
     <title>Delivery Status</title>
 </head>
 <body>
-    <h1>Delivery Status</h1>
-    <p>Delivery ID: <span th:text="${deliveryId}"></span></p>
-    <p>Status: <span th:text="${deliveryStatus}"></span></p>
+    <h1>Delivery Details</h1>
+    
+    <div>
+        <h2>Delivery Information</h2>
+        
+        <p><strong>ID:</strong> <span th:text="${delivery.id}"></span></p>
+        <p><strong>Delivery Date:</strong> <span th:text="${delivery.deliveryDate}"></span></p>
+        <p><strong>Estimated Arrival Date:</strong> <span th:text="${delivery.estimatedArrivalDate}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${delivery.status}"></span></p>
+
+        <div th:if="${userAuthenticated}">
+            <h3>Packet Information</h3>
+            <p><strong>Type:</strong> <span th:text="${delivery.packet.packetType}"></span></p>
+            <p><strong>Weight:</strong> <span th:text="${delivery.packet.packetWeight}"></span></p>
+            <p><strong>Height:</strong> <span th:text="${delivery.packet.packetHeight}"></span></p>
+            <p><strong>Width:</strong> <span th:text="${delivery.packet.packetWidth}"></span></p>
+            <p><strong>Length:</strong> <span th:text="${delivery.packet.packetLength}"></span></p>
+            
+            <p><strong>Transportation:</strong> <span th:text="${delivery.transportation}"></span></p>
+            
+            <h3>Source Address</h3>
+            <p><strong>Email:</strong> <span th:text="${delivery.source.email}"></span></p>
+            <p><strong>First Name:</strong> <span th:text="${delivery.source.firstName}"></span></p>
+            <p><strong>Last Name:</strong> <span th:text="${delivery.source.lastName}"></span></p>
+            <p><strong>Street:</strong> <span th:text="${delivery.source.street}"></span></p>
+            <p><strong>City:</strong> <span th:text="${delivery.source.city}"></span></p>
+            <p><strong>Zip Code:</strong> <span th:text="${delivery.source.zipCode}"></span></p>
+            <p><strong>Country:</strong> <span th:text="${delivery.source.country}"></span></p>
+            
+            <h3>Destination Address</h3>
+            <p><strong>Email:</strong> <span th:text="${delivery.destination.email}"></span></p>
+            <p><strong>First Name:</strong> <span th:text="${delivery.destination.firstName}"></span></p>
+            <p><strong>Last Name:</strong> <span th:text="${delivery.destination.lastName}"></span></p>
+            <p><strong>Street:</strong> <span th:text="${delivery.destination.street}"></span></p>
+            <p><strong>City:</strong> <span th:text="${delivery.destination.city}"></span></p>
+            <p><strong>Zip Code:</strong> <span th:text="${delivery.destination.zipCode}"></span></p>
+            <p><strong>Country:</strong> <span th:text="${delivery.destination.country}"></span></p>
+
+            <h3>Invoice Information</h3>
+            <p><strong>ID:</strong> <span th:text="${delivery.invoice.id}"></span></p>
+            <p><strong>Price:</strong> <span th:text="${delivery.invoice.price}"></span></p>
+            <p><strong>Tax:</strong> <span th:text="${delivery.invoice.tax}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${delivery.invoice.date}"></span></p>
+            <p><strong>Due Date:</strong> <span th:text="${delivery.invoice.dueDate}"></span></p>
+            <p><strong>Total:</strong> <span th:text="${delivery.invoice.total}"></span></p>
+            <p><strong>Service Info:</strong> <span th:text="${delivery.invoice.serviceInfo}"></span></p>
+    
+            <h3>Customer Information</h3>
+            <p><strong>Email:</strong> <span th:text="${delivery.invoice.customerInfo.email}"></span></p>
+            <p><strong>First Name:</strong> <span th:text="${delivery.invoice.customerInfo.firstName}"></span></p>
+            <p><strong>Last Name:</strong> <span th:text="${delivery.invoice.customerInfo.lastName}"></span></p>
+            <p><strong>Street:</strong> <span th:text="${delivery.invoice.customerInfo.street}"></span></p>
+            <p><strong>City:</strong> <span th:text="${delivery.invoice.customerInfo.city}"></span></p>
+            <p><strong>Zip Code:</strong> <span th:text="${delivery.invoice.customerInfo.zipCode}"></span></p>
+            <p><strong>Country:</strong> <span th:text="${delivery.invoice.customerInfo.country}"></span></p>
+            
+        </div>
+    </div>
 </body>
 </html>

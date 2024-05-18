@@ -43,5 +43,19 @@
             <button type="submit">Create New User</button>
         </form>
     </div>
+    <br>          
+    <div>
+        <form th:action="@{/deliveries/track}" method="post">
+            <label for="deliveryId"></label>
+            <input type="text" id="deliveryId" placeholder="Enter delidery ID" name="deliveryId" required>
+            <button type="submit">View status</button>
+        </form>
+        <br>          
+        <div th:if="${errorMessage}">
+            <p th:style="'color: red;'" th:text="${errorMessage}"></p>
+        </div>
+        <br>          
+        <button type="button" onclick="location.href='@{/#}'">Create delivery</button>
+    </div>
 </body>
 </html>

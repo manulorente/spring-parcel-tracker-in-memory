@@ -55,7 +55,7 @@ public class UserController {
     public String createUser(@ModelAttribute Customer userDetails, Model model) {
         log.info("Creating user");
         this.userService.createUser(userDetails);
-        return "redirect:/users";
+        return "redirect:/dashboard";
     }    
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
@@ -63,7 +63,7 @@ public class UserController {
     public String deleteUserByUserName(@PathVariable String userName) {
         log.info("Deleting user by username");
         this.userService.deleteUserByUserName(userName);
-        return "redirect:/users";
+        return "redirect:/dashboard";
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
@@ -85,7 +85,7 @@ public class UserController {
             user.setPassword(userDetails.getPassword());
         }
         userService.updateUser(userDetails);
-        return "redirect:/users";
+        return "redirect:/dashboard";
     }
     
 }

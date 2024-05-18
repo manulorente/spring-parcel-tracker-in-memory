@@ -33,6 +33,10 @@ public class DeliveryService {
         return this.deliveryRepository.findAll();
     }
 
+    public Boolean existsById(Long id) {
+        return this.deliveryRepository.existsById(id);
+    }
+
     public Delivery getDeliveryById(Long id) {
         return this.deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery not found with id: " + id));

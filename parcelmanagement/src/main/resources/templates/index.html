@@ -13,7 +13,11 @@
                 <button type="submit">View status</button>
             </form>
             <br>          
-            <button type="button" onclick="location.href='@{/login}'">Create delivery</button>
+            <div th:if="${errorMessage}">
+                <p th:style="'color: red;'" th:text="${errorMessage}"></p>
+            </div>
+            <br>          
+            <button type="button" onclick="location.href='@{/login}'">Login</button>
         </div>
     </main>
 </body>
