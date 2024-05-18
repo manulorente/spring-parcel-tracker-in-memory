@@ -32,7 +32,7 @@ public class userJacksonDeserializer extends JsonDeserializer<User> {
         JsonNode roleNode = jsonNode.get("role");
         String role = (roleNode != null && !(roleNode instanceof NullNode)) ? roleNode.asText() : null;
 
-        if (UserRole.ADMIN.name().equals(role)) {
+        if (UserRole.ROLE_ADMIN.name().equals(role)) {
             return handleMissingFields(objectCodec.treeToValue(jsonNode, Admin.class));
         } else {
             return handleMissingFields(objectCodec.treeToValue(jsonNode, Customer.class));
@@ -54,7 +54,7 @@ public class userJacksonDeserializer extends JsonDeserializer<User> {
         }
 
         if (user.getRole() == null) {
-            user.setRole(UserRole.CUSTOMER);
+            user.setRole(UserRole.ROLE_CUSTOMER);
         }
 
         return user;

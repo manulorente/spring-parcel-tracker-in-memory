@@ -4,18 +4,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "addresses")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String email;
@@ -31,5 +29,15 @@ public class Address {
     private String zipCode;
     
     private String country;
+
+    public Address(String email, String firstName, String lastName, String street, String city, String zipCode, String country) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.street = street;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.country = country;
+    }
 
 }

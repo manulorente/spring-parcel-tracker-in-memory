@@ -2,6 +2,7 @@ package com.dam.parcelmanagement.model;
 
 import java.util.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,7 +33,7 @@ public class Invoice {
 
     private Double total;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_info_id", referencedColumnName = "id")
     private Address customerInfo;
 

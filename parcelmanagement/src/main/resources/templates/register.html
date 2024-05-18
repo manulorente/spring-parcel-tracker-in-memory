@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register a New User</h1>
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" th:field="*{username}" placeholder="Enter username" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" th:field="*{password}" placeholder="Enter password" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{address.email}" placeholder="Enter email" required>
+        </div>
+        <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" th:field="*{address.firstName}" placeholder="Enter first name" required>
+        </div>
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" th:field="*{address.lastName}" placeholder="Enter last name" required>
+        </div>
+        <div>
+            <label for="street">Street:</label>
+            <input type="text" id="street" th:field="*{address.street}" placeholder="Enter street" required>
+        </div>
+        <div>
+            <label for="city">City:</label>
+            <input type="text" id="city" th:field="*{address.city}" placeholder="Enter city" required>
+        </div>
+        <div>
+            <label for="zipCode">Zip Code:</label>
+            <input type="text" id="zipCode" th:field="*{address.zipCode}" placeholder="Enter zip code" required>
+        </div>
+        <div>
+            <label for="country">Country:</label>
+            <input type="text" id="country" th:field="*{address.country}" placeholder="Enter country" required>
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+</body>
+</html>
