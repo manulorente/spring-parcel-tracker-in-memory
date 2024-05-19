@@ -1,5 +1,8 @@
 package com.dam.parcelmanagement.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +12,13 @@ import org.springframework.stereotype.Service;
 import com.dam.parcelmanagement.model.Address;
 import com.dam.parcelmanagement.model.Delivery;
 import com.dam.parcelmanagement.model.Invoice;
+import com.dam.parcelmanagement.model.Packet;
+import com.dam.parcelmanagement.model.PacketStatus;
 import com.dam.parcelmanagement.model.User;
 import com.dam.parcelmanagement.repository.DeliveryRepository;
+
+import jakarta.transaction.Transactional;
+
 import com.dam.parcelmanagement.exception.ResourceNotFoundException;
 
 @Service
@@ -28,13 +36,12 @@ public class DeliveryService {
     @Autowired
     private InvoiceService invoiceService;
 
+    public Boolean existsById(Long id) {
+        return this.deliveryRepository.existsById(id);
+    }
     
     public List<Delivery> getAllDeliveries() {
         return this.deliveryRepository.findAll();
-    }
-
-    public Boolean existsById(Long id) {
-        return this.deliveryRepository.existsById(id);
     }
 
     public Delivery getDeliveryById(Long id) {
@@ -42,25 +49,64 @@ public class DeliveryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery not found with id: " + id));
     }
 
-    public Delivery createDelivery(Delivery delivery) {
-        User user = this.userService.getUserById(delivery.getSource().getId());
-        delivery.setSource(this.addressService.getAddressById(user.getAddress().getId()));
-        Address destination = delivery.getDestination();
-        if (this.addressService.getAddressById(destination.getId()) == null) {
-            this.addressService.createAddress(destination);
-        }
-        Invoice invoice = new Invoice();
-        Double packetVolume = delivery.getPacket().getPacketHeight()*delivery.getPacket().getPacketWidth()*delivery.getPacket().getPacketLength();
+    public List<Delivery> getDeliveriesByUsername (String username) {
+        User user = this.userService.getUserByUsername(username);
+        Address address = this.addressService.getAddressById(user.getAddress().getId());
+        return this.deliveryRepository.findBySourceId(address.getId());
+        
+    }
+    @Transactional
+    public Delivery createDelivery(Delivery delivery) throws ParseException {
+        User user = userService.getUserById(delivery.getSource().getId());
+        delivery.setSource(addressService.getAddressById(user.getAddress().getId()));
+        addressService.createAddress(delivery.getDestination());
+
+        Double packetVolume = delivery.getPacket().getPacketHeight() * delivery.getPacket().getPacketWidth() * delivery.getPacket().getPacketLength();
+        Double price = calculatePrice(delivery.getPacket(), packetVolume);
+        Integer days = calculateDaysAndStatus(delivery);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(new Date());
+        Date deliveryDate = dateFormat.parse(formattedDate);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(deliveryDate);
+        cal.add(Calendar.DATE, days);
+        Date estimatedArrivalDate = cal.getTime();
+
+        delivery.setDeliveryDate(deliveryDate);
+        delivery.setEstimatedArrivalDate(estimatedArrivalDate);
+
+        Invoice invoice = createInvoice(delivery, price);
+        delivery.setInvoice(invoiceService.createInvoice(invoice));
+
+        return deliveryRepository.save(delivery);
+    }
+
+    @Transactional
+    public Delivery updateDelivery(Long id, Delivery delivery) {
+        Delivery existingDelivery = this.getDeliveryById(id);
+        existingDelivery.setSource(delivery.getSource());
+        existingDelivery.setDestination(delivery.getDestination());
+        existingDelivery.setPacket(delivery.getPacket());
+        existingDelivery.setTransportation(delivery.getTransportation());
+        existingDelivery.setInvoice(delivery.getInvoice());
+        return this.deliveryRepository.save(existingDelivery);
+    }
+
+    @Transactional
+    public void deleteDelivery(Long id) {
+        this.deliveryRepository.deleteById(id);
+    }
+    
+    private Double calculatePrice(Packet packet, Double packetVolume) {
         Double price;
-        Integer days;
-        Double tax = 0.1;
-        // calculate price based on packet type
-        switch (delivery.getPacket().getPacketType()) {
+        switch (packet.getPacketType()) {
             case ENVELOPE:
                 price = 2.0;
                 break;
             case BOX:
-                price = 5.0 + packetVolume/1000;
+                price = 5.0 + packetVolume / 1000;
                 break;
             case DOCUMENT:
                 price = 1.0;
@@ -69,50 +115,40 @@ public class DeliveryService {
                 price = 0.0;
                 break;
         }
-        // if weight is greater than 1kg, add 10% to the price
-        if (delivery.getPacket().getPacketWeight() > 1.0) {
+        if (packet.getPacketWeight() > 1.0) {
             price *= 1.1;
         }
-        // calculate price based on transportation type
+        return price;
+    }
+
+    private Integer calculateDaysAndStatus(Delivery delivery) {
+        Integer days;
         switch (delivery.getTransportation()) {
             case URGENT:
-                price *= 1.5;
+                delivery.setStatus(PacketStatus.IN_TRANSIT);
                 days = 1;
                 break;
             case EXPRESS:
-                price *= 1.2;
+                delivery.setStatus(PacketStatus.PENDING);
                 days = 3;
                 break;
             default:
-                price *= 1.0;
+                delivery.setStatus(PacketStatus.PENDING);
                 days = 7;
                 break;
         }
+        return days;
+    }
+
+    private Invoice createInvoice(Delivery delivery, Double price) {
+        Invoice invoice = new Invoice();
+        invoice.setServiceInfo("Delivery from " + delivery.getSource() + " to " + delivery.getDestination());
         invoice.setPrice(price);
-        invoice.setTax(tax);
-        invoice.setTotal(invoice.getPrice()*(1+invoice.getTax()));
-        invoice.setDate(new Date());
-        invoice.setDueDate(new Date(invoice.getDate().getTime() + days*24*60*60*1000));
+        invoice.setTax(0.1);
+        invoice.setTotal(price * (1 + 0.1));
+        invoice.setDate(delivery.getDeliveryDate());
+        invoice.setDueDate(delivery.getEstimatedArrivalDate());
         invoice.setCustomerInfo(delivery.getSource());
-        invoice.setServiceInfo(" Delivery  from " + delivery.getSource().toString() + " to " + delivery.getDestination().toString());
-        delivery.setInvoice(this.invoiceService.createInvoice(invoice));
-        return this.deliveryRepository.save(delivery);
+        return invoice;
     }
-
-    public Delivery updateDelivery(Long id, Delivery deliveryDetails) {
-        Delivery delivery = this.deliveryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found with id: " + id));
-        delivery.setPacket(deliveryDetails.getPacket());
-        delivery.setTransportation(deliveryDetails.getTransportation());
-        delivery.setDestination(deliveryDetails.getDestination());
-        delivery.setDeliveryDate(deliveryDetails.getDeliveryDate());
-        delivery.setEstimatedArrivalDate(deliveryDetails.getEstimatedArrivalDate());
-        delivery.setStatus(deliveryDetails.getStatus());
-        return this.deliveryRepository.save(delivery);
-    }
-
-    public void deleteDelivery(Long id) {
-        this.deliveryRepository.deleteById(id);
-    }
-    
 }

@@ -10,6 +10,8 @@ import com.dam.parcelmanagement.model.Comment;
 import com.dam.parcelmanagement.model.User;
 import com.dam.parcelmanagement.repository.CommentRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CommentService {
 
@@ -34,11 +36,17 @@ public class CommentService {
 
     }
     
-    public Comment createComment(Long userId, Double rating, String description) {
-        User user = this.userService.getUserById(userId);
-        return this.commentRepository.save(new Comment(user, rating, description));
+    @Transactional
+    public Comment createComment(Comment comment, String username) {
+        User user = this.userService.getUserByUsername(username);
+        Comment newComment = new Comment();
+        newComment.setDescription(comment.getDescription());
+        newComment.setRating(comment.getRating());
+        newComment.setUser(user);
+        return this.commentRepository.save(comment);
     }
 
+    @Transactional
     public Comment updateComment(Long commentId, Comment comment) {
         Optional<Comment> existingComment = commentRepository.findById(commentId);
         if (existingComment.isPresent()) {
@@ -52,10 +60,12 @@ public class CommentService {
         }
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
         this.commentRepository.deleteById(commentId);
     }
 
+    @Transactional
     public void deleteAllComments() {
         this.commentRepository.deleteAll();
     }

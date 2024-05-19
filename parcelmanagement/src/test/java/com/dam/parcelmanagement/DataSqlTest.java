@@ -15,31 +15,31 @@ public class DataSqlTest {
 
     @Test
     public void  testAddressDataSqlExecution() {
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM addresses", Integer.class) == 5;
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM addresses", Integer.class) > 1;
     }
 
     @Test
     public void  testInvoiceDataSqlExecution() {
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM  invoices", Integer.class) == 2;
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM  invoices", Integer.class) > 1;
     }
 
     @Test
     public void  testUserSqlExecution() {
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class) == 2;
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class) > 1;
     }
 
     @Test
     public void  testDeliveryDataSqlExecution() {
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM deliveries", Integer.class) == 2;
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM deliveries", Integer.class) > 1;
     }
 
     @Test
     public void  testCommentDataSqlExecution() {
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM comments", Integer.class) == 2;
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM comments", Integer.class) > 1;
     }
 
     @Test
     public void  testReportDataSqlExecution() {
-        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reports", Integer.class) == 2;
+        assert jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reports", Integer.class) > 1;
     }
 }

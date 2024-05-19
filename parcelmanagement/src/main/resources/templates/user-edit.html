@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Details</title>
 </head>
 <body>
     <h1>User Details</h1>
-    <form th:action="@{/users/{userName}/edit}" th:object="${user}" method="post">
+    <form th:action="@{/users/{username}/edit}" th:object="${user}" method="post">
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="userName" th:field="*{username}" readonly="readonly"/>
+            <input type="text" id="username" name="username" th:field="*{username}" readonly="readonly"/>
         </div>
         <div>
             <label for="password">Password:</label>

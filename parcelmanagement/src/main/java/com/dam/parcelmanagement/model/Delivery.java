@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Delivery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Embedded
@@ -37,7 +37,7 @@ public class Delivery {
     @JoinColumn(name = "source_id", referencedColumnName = "id")
     private Address source;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "destination_id", referencedColumnName = "id")
     private Address destination;
 

@@ -1,67 +1,60 @@
 package com.dam.parcelmanagement.controller;
 
-import java.util.List;
+import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.dam.parcelmanagement.service.CommentService;
 import com.dam.parcelmanagement.model.Comment;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/comments")
 public class CommentController {
 
-        private final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-        @Autowired
-        private CommentService commentService;
+    @Autowired
+    private CommentService commentService;
 
-        @GetMapping("")
-        public List<Comment> getComments() {
-            log.info("Getting all comments");
-            return this.commentService.getAllComments();
+    @GetMapping("/view")
+    public String getAllComments(Model model, Principal principal) {
+        log.info("Get all comments");
+        model.addAttribute("comments", commentService.getAllComments());
+        model.addAttribute("comment", new Comment());
+        if (principal != null) {
+            model.addAttribute("username", principal.getName());
         }
+        return "comments";
+    }
 
-        @GetMapping("/{id}")
-        public Comment getCommentById(@PathVariable Long id) {
-            log.info("Getting comment by id: " + id);
-            return this.commentService.getCommentById(id);
-        }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @GetMapping("/create")
+    public String createComment(Principal principal, Model model) {
+        log.info("Show comment creation form");
+        model.addAttribute("comment", new Comment());
+        model.addAttribute("username", principal.getName());
+        return "comments";
+    }
 
-        @PutMapping("/{id}")
-        public Comment updateComment(@PathVariable Long id, @RequestBody Comment commentDetails) {
-            log.info("Updating comment with id: " + id);
-            return this.commentService.updateComment(id, commentDetails);
-        }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PostMapping("/create")
+    public String createComment(@ModelAttribute Comment comment, Principal principal) {
+        log.info("Create comment");
+        this.commentService.createComment(comment, principal.getName());
+        return "redirect:/comments/view";
+    }
 
-        @PostMapping("")
-        public Comment createComment(@RequestBody Comment comment) {
-            log.info("Creating comment");
-            return this.commentService.createComment(comment.getUser().getId(), comment.getRating(), comment.getDescription());
-        }
-
-        @DeleteMapping("/{id}")
-        public void deleteComment(@PathVariable Long id) {
-            log.info("Deleting comment with id: " + id);
-            this.commentService.deleteComment(id);
-        }
-
-        @DeleteMapping("")
-        public void deleteAllComments() {
-            log.info("Deleting all comments");
-            this.commentService.deleteAllComments();
-        }
-        
 
     
 }

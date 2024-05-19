@@ -18,6 +18,10 @@ public class AddressService {
     @Autowired
     private AddressRepository addressRepository;
 
+    public Boolean existsById(Long id) {
+        return this.addressRepository.existsById(id);
+    }
+
     public List<Address> getAllAddresses() {
         return this.addressRepository.findAll();
     }
@@ -70,6 +74,7 @@ public class AddressService {
         }
     }
 
+    @Transactional
     public void deleteAddress(Long id) {
         if (!this.addressRepository.existsById(id)) {
             throw new ResourceNotFoundException("Address not found with id: " + id);

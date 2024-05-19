@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dam.parcelmanagement.model.Address;
 import com.dam.parcelmanagement.model.Admin;
 import com.dam.parcelmanagement.model.Customer;
 import com.dam.parcelmanagement.model.User;
@@ -22,16 +21,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AddressService addressService;
-
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
+    }
+
+    public Boolean existsUserByUsername (String username) {
+        return this.userRepository.existsByUsername(username);
     }
 
     public User getUserById(Long id) {
@@ -39,23 +34,23 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
-    public User getUserByUserName(String userName) {
-        return this.userRepository.findByUsername(userName)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userName));
+    public User getUserByUsername(String username) {
+        return this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
     }
 
     @Transactional
     public User updateUser(User userDetails) {
-        User newUser = this.getUserByUserName(userDetails.getUsername());
-
-        Address updatedAddress = this.addressService.updateAddress(newUser.getAddress().getId(), userDetails.getAddress());
-        newUser.setAddress(updatedAddress);
+        User newUser = this.getUserByUsername(userDetails.getUsername());
 
         if (userDetails.getPassword() != null) {
             newUser.setPassword(userDetails.getPassword());
         }
         if (userDetails.getRole() != null) {
             newUser.setRole(userDetails.getRole());
+        }
+        if (userDetails.getAddress() != null) {
+            newUser.setAddress(userDetails.getAddress());
         }
         return this.userRepository.save(newUser);
     }
@@ -68,20 +63,19 @@ public class UserService {
         if (this.userRepository.existsByUsername(user.getUsername())) {
             throw new ResourceNotFoundException("User already exists with username: " + user.getUsername());
         }
-        Address newAddress = this.addressService.createAddress(user.getAddress());
         User newUser;
         if (user.getRole().equals(UserRole.ROLE_ADMIN)){
-            newUser = new Admin(user.getUsername(), user.getPassword(), newAddress);
+            newUser = new Admin(user.getUsername(), user.getPassword(), user.getAddress());
         }
         else {
-            newUser = new Customer(user.getUsername(), user.getPassword(), newAddress);
+            newUser = new Customer(user.getUsername(), user.getPassword(), user.getAddress());
         }
         return this.userRepository.save(newUser);
     }
     
     @Transactional
-    public void deleteUserByUserName(String userName) {
-        this.userRepository.delete(this.getUserByUserName(userName));
+    public void deleteUser(String username) {
+        this.userRepository.delete(this.getUserByUsername(username));
     }
 
 }

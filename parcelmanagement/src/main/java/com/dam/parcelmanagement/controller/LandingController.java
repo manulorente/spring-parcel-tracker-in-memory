@@ -1,6 +1,5 @@
 package com.dam.parcelmanagement.controller;
 
-
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
@@ -49,15 +48,15 @@ public class LandingController {
     @GetMapping({"/dashboard"})
     public String getUsers(Principal principal, Model model) {
         log.info("Getting users information");
-        String userName = this.userService.getUserByUserName(principal.getName()).getUsername();
-        model.addAttribute("username", userName);
+        String username = this.userService.getUserByUsername(principal.getName()).getUsername();
+        model.addAttribute("username", username);
         if (isUserAdmin(principal)) {
             List<User> users = userService.getAllUsers();
             model.addAttribute("useradmin", true);
             model.addAttribute("users", users);
             return "dashboard";
         } else {
-            User user = userService.getUserByUserName(userName);
+            User user = userService.getUserByUsername(username);
             model.addAttribute("users", user);            
             return "dashboard";
         }

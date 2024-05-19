@@ -1,14 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Users</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
 </head>
 <body>
     <h1>Welcome, <span th:text="${username}">User</span></h1>
+    
+    <div>
+        <form th:action="@{/deliveries/create}" method="get">
+            <button type="submit">Create Delivery</button>
+        </form>
+        <form th:action="@{/comments/create}" method="get">
+            <button type="submit">Rate the Service</button>
+        </form>
+    </div>
+
+    <div th:if="${useradmin}">
+        <form th:action="@{/users/create}" method="get">
+            <button type="submit">Create New User</button>
+        </form>
+        <form th:action="@{/reports/create}" method="get">
+            <button type="submit">Generate Report</button>
+        </form>
+    </div>
+    
+    <div>
+        <form th:action="@{/deliveries/view}" method="post">
+            <input type="text" name="deliveryId" placeholder="Enter Delivery ID" required>
+            <button type="submit">View Status</button>
+        </form>
+        <form th:action="@{'/deliveries/' + ${username} + '/view'}" method="get">
+            <button type="submit">View All My Deliveries</button>
+        </form>
+    </div>
+
+    <div th:if="${errorMessage}">
+        <p th:style="'color: red;'" th:text="${errorMessage}"></p>
+    </div>
+    
+    <h2>Users</h2>
     <table>
         <tr>
             <th>ID</th>
-            <th>User name</th>
+            <th>Username</th>
             <th>Password</th>
             <th>Role</th>
             <th>Email</th>
@@ -25,37 +61,16 @@
             <td th:text="${user.address.email}"></td>
             <td th:text="${user.address.firstName}"></td>
             <td th:text="${user.address.lastName}"></td>
-            <td th:text="${user.address.street} + ', ' + ${user.address.city} + ' ' + ${user.address.zipCode} + ' ' + ${user.address.country}"></td>
+            <td th:text="${user.address.street + ', ' + user.address.city + ' ' + user.address.zipCode + ' ' + user.address.country}"></td>
             <td>
-                <form th:action="@{'/users/' + ${user.username} + '/edit'}" method="get" style="display:inline">
+                <form th:action="@{'/users/' + ${user.username} + '/edit'}" method="get">
                     <button type="submit">Edit</button>
-                </form>   
-                <div th:if="${user.username != username}">           
-                    <form th:action="@{'/users/' + ${user.username} + '/delete'}" method="post" style="display:inline">
-                        <button type="submit">Delete</button>
-                    </form>
-                </div>  
+                </form>
+                <form th:if="${user.username != username}" th:action="@{'/users/' + ${user.username} + '/delete'}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
     </table>
-    <div th:if="${useradmin}">
-        <form th:action="@{'/users/create'}" method="get" style="display:inline">
-            <button type="submit">Create New User</button>
-        </form>
-    </div>
-    <br>          
-    <div>
-        <form th:action="@{/deliveries/track}" method="post">
-            <label for="deliveryId"></label>
-            <input type="text" id="deliveryId" placeholder="Enter delidery ID" name="deliveryId" required>
-            <button type="submit">View status</button>
-        </form>
-        <br>          
-        <div th:if="${errorMessage}">
-            <p th:style="'color: red;'" th:text="${errorMessage}"></p>
-        </div>
-        <br>          
-        <button type="button" onclick="location.href='@{/#}'">Create delivery</button>
-    </div>
 </body>
 </html>

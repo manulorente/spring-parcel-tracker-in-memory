@@ -32,9 +32,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(requests -> requests
-                    .requestMatchers("/", "/index", "/h2-console/**").permitAll()
-                    .requestMatchers("/login", "/register","/deliveries/track").permitAll()
-                    .requestMatchers("/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                    .requestMatchers("/", "/index", "/h2-console/**", "/login", "/register").permitAll()
+                    .requestMatchers("/deliveries/**", "/users/**", "/invoices/**", "/reports/**", "/comments/**").permitAll()
                     .anyRequest().authenticated())
             .formLogin(login -> login
                     .loginPage("/login")
@@ -51,7 +50,7 @@ public class SecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            User user = this.userService.getUserByUserName(username);
+            User user = this.userService.getUserByUsername(username);
             UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getUsername());
             builder.password("{noop}" + user.getPassword());
             builder.authorities(user.getRole().toString());

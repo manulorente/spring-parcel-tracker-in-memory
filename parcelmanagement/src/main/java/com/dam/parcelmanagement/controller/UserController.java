@@ -42,49 +42,55 @@ public class UserController {
         return false;
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/create")
-    public String CreateUserForm(Model model) {
+    public String createUser(Principal principal, Model model) {
         log.info("Showing user creation form");
         model.addAttribute("user", new Customer());
+        model.addAttribute("isUserAdmin", isUserAdmin(principal));
         return "user-new";
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/create")
-    public String createUser(@ModelAttribute Customer userDetails, Model model) {
+    public String createUser(Principal principal, @ModelAttribute Customer userDetails, Model model) {
         log.info("Creating user");
+        Boolean usernameExists = this.userService.existsUserByUsername(userDetails.getUsername());
+        if (usernameExists) {
+            model.addAttribute("errorMessage", "User already exists");
+            model.addAttribute("user", new Customer());
+            model.addAttribute("isUserAdmin", isUserAdmin(principal));
+            return "user-new";
+        }
         this.userService.createUser(userDetails);
         return "redirect:/dashboard";
     }    
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    @PostMapping("/{userName}/delete")
-    public String deleteUserByUserName(@PathVariable String userName) {
+    @PostMapping("/{username}/delete")
+    public String deleteUser(@PathVariable String username) {
         log.info("Deleting user by username");
-        this.userService.deleteUserByUserName(userName);
+        this.userService.deleteUser(username);
         return "redirect:/dashboard";
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    @GetMapping("/{userName}/edit")
-    public String editUserForm(@PathVariable String userName, Model model) {
+    @GetMapping("/{username}/edit")
+    public String updateUser(@PathVariable String username, Model model) {
         log.info("Showing user edit form");
-        User user = userService.getUserByUserName(userName);
+        User user = userService.getUserByUsername(username);
         model.addAttribute("user", user);
         return "user-edit";
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    @PostMapping("/{userName}/edit")
-    public String updateUser(@PathVariable String userName, Principal principal, @ModelAttribute Customer userDetails, Model model) {
+    @PostMapping("/{username}/edit")
+    public String updateUser(@PathVariable String username, Principal principal, @ModelAttribute Customer userDetails, Model model) {
         log.info("Updating user");
         if (!isUserAdmin(principal)) {
-            User user = userService.getUserByUserName(userName);
+            User user = this.userService.getUserByUsername(username);
             user.setAddress(userDetails.getAddress());
             user.setPassword(userDetails.getPassword());
         }
-        userService.updateUser(userDetails);
+        this.userService.updateUser(userDetails);
         return "redirect:/dashboard";
     }
     

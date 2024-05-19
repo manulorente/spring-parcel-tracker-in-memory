@@ -1,7 +1,6 @@
 package com.dam.parcelmanagement.controller;
 
 import com.dam.parcelmanagement.model.Customer;
-import com.dam.parcelmanagement.model.User;
 import com.dam.parcelmanagement.service.UserService;
 
 import java.security.Principal;
@@ -34,29 +33,23 @@ public class AuthController {
         model.addAttribute("user", new Customer());
         return "login";
     }
-
-    @PostMapping("/login")
-    public String loginSuccess (Principal principal, Model model) {
-        log.info("User logged in");
-        User user = userService.getUserByUserName(principal.getName());
-        String redirectUrl = String.format("/users/%s/view", user.getUsername());
-        return "redirect:" + redirectUrl;
-    }
     
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm(Principal principal, Model model) {
         log.info("Register page accessed");
         model.addAttribute("user", new Customer());
-        return "register";
+        return "redirect:/users/create";
     }
 
     @PostMapping("/register")
-    public String registerSuccess(@ModelAttribute Customer userDetails, Principal principal, Model model) {
+    public String registerUser(@ModelAttribute Customer userDetails, Model model) {
         log.info("Registering user");
+        if (this.userService.getUserByUsername(userDetails.getUsername()) != null) {
+            model.addAttribute("errorMessage", "User already exists");
+            return "user-new";
+        }
         this.userService.createUser(userDetails);
-        User user = userService.getUserByUserName(principal.getName());
-        String redirectUrl = String.format("/users/%s/view", user.getUsername());
-        return "redirect:" + redirectUrl;
+        return "redirect:/dashboard";
     }
 
 }
