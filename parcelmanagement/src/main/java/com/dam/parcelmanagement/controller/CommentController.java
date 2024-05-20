@@ -1,8 +1,6 @@
 package com.dam.parcelmanagement.controller;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.security.Principal;
-import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +18,19 @@ import com.dam.parcelmanagement.model.Comment;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
-
 @Controller
 @RequestMapping("/comments")
 public class CommentController {
 
+    // Logger para registrar información y eventos importantes
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
+    // Inyecta una instancia de CommentService para utilizar sus métodos
     @Autowired
     private CommentService commentService;
 
+    // Muestra todos los comentarios
+    // Añade los comentarios y el nombre de usuario al modelo
     @GetMapping("/view")
     public String getAllComments(@ModelAttribute Comment comment, Principal principal, Model model) {
         log.info("Get all comments");
@@ -41,6 +42,9 @@ public class CommentController {
         return "comments";
     }
 
+    // Permite crear un nuevo comentario
+    // Sólo accesible para usuarios con roles 'ROLE_ADMIN' o 'ROLE_CUSTOMER'
+    // Añade el nuevo comentario al modelo y redirige a la vista de comentarios
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @PostMapping("/create")
     public String createComment(@ModelAttribute Comment newComment, Principal principal, Model model, RedirectAttributes redirectAttributes) {
@@ -49,7 +53,4 @@ public class CommentController {
         redirectAttributes.addFlashAttribute("newComment", comment);
         return "redirect:/comments/view";
     }
-
-
-    
 }

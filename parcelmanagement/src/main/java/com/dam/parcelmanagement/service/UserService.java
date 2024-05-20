@@ -18,31 +18,36 @@ import com.dam.parcelmanagement.exception.ResourceNotFoundException;
 @Service
 public class UserService {
 
+    // Inyecta una instancia de UserRepository para acceder a las operaciones CRUD
     @Autowired
     private UserRepository userRepository;
 
+    // Obtiene todos los usuarios
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
     }
 
-    public Boolean existsUserByUsername (String username) {
+    // Verifica si un usuario existe por su nombre de usuario
+    public Boolean existsUserByUsername(String username) {
         return this.userRepository.existsByUsername(username);
     }
 
+    // Obtiene un usuario por su ID
     public User getUserById(Long id) {
         return this.userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
+    // Obtiene un usuario por su nombre de usuario
     public User getUserByUsername(String username) {
         return this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
     }
 
+    // Actualiza un usuario existente
     @Transactional
     public User updateUser(User userDetails) {
         User newUser = this.getUserByUsername(userDetails.getUsername());
-
         if (userDetails.getPassword() != null) {
             newUser.setPassword(userDetails.getPassword());
         }
@@ -55,6 +60,7 @@ public class UserService {
         return this.userRepository.save(newUser);
     }
 
+    // Crea un nuevo usuario
     @Transactional
     public User createUser(User user) {
         if (user.getId() != null && this.userRepository.existsById(user.getId())) {
@@ -66,16 +72,15 @@ public class UserService {
         User newUser;
         if (user.getRole().equals(UserRole.ROLE_ADMIN)){
             newUser = new Admin(user.getUsername(), user.getPassword(), user.getAddress());
-        }
-        else {
+        } else {
             newUser = new Customer(user.getUsername(), user.getPassword(), user.getAddress());
         }
         return this.userRepository.save(newUser);
     }
-    
+
+    // Elimina un usuario por su nombre de usuario
     @Transactional
     public void deleteUser(String username) {
         this.userRepository.delete(this.getUserByUsername(username));
     }
-
 }

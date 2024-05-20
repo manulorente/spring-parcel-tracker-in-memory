@@ -20,10 +20,12 @@ import com.dam.parcelmanagement.model.UserRole;
 @JsonComponent
 public class userJacksonDeserializer extends JsonDeserializer<User> {
 
+    // Constructor por defecto
     public userJacksonDeserializer() {
         super();
     }
 
+    // Método principal de deserialización
     @Override
     public User deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         ObjectCodec objectCodec = jsonParser.getCodec();
@@ -32,6 +34,7 @@ public class userJacksonDeserializer extends JsonDeserializer<User> {
         JsonNode roleNode = jsonNode.get("role");
         String role = (roleNode != null && !(roleNode instanceof NullNode)) ? roleNode.asText() : null;
 
+        // Deserializa según el rol del usuario
         if (UserRole.ROLE_ADMIN.name().equals(role)) {
             return handleMissingFields(objectCodec.treeToValue(jsonNode, Admin.class));
         } else {
@@ -39,8 +42,8 @@ public class userJacksonDeserializer extends JsonDeserializer<User> {
         }
     }
 
+    // Maneja campos faltantes estableciendo valores por defecto
     private <T extends User> T handleMissingFields(T user) {
-
         if (user.getUsername() == null) {
             user.setUsername("");
         }

@@ -14,13 +14,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class AddressService {
 
+    // Inyecta una instancia de AddressRepository para acceder a las operaciones CRUD
     @Autowired
     private AddressRepository addressRepository;
 
-    public Boolean existsById(Long id) {
-        return this.addressRepository.existsById(id);
-    }
-
+    // Obtiene una dirección por su ID
     public Address getAddressById(Long id) {
         Optional<Address> address = this.addressRepository.findById(id);
         if (!address.isPresent()) {
@@ -29,6 +27,7 @@ public class AddressService {
         return address.get();
     }
 
+    // Crea una nueva dirección
     @Transactional
     public Address createAddress(Address address) {
         if (address.getId() != null && this.addressRepository.existsById(address.getId())) {
@@ -37,6 +36,7 @@ public class AddressService {
         return this.addressRepository.save(address);
     }
 
+    // Actualiza una dirección existente
     @Transactional
     public Address updateAddress(Long id, Address addressDetails) {
         Optional<Address> address = this.addressRepository.findById(id);
@@ -68,6 +68,4 @@ public class AddressService {
             throw new ResourceNotFoundException("Address not found with id: " + id);
         }
     }
-
-    
 }

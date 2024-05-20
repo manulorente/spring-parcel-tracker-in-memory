@@ -25,9 +25,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
+    // Inyecta una instancia de UserService para gestionar los usuarios
     @Autowired
     UserService userService;
 
+    // Configura la cadena de filtros de seguridad
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -45,22 +47,24 @@ public class SecurityConfiguration {
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/index")
                     .permitAll());
-        http.headers(headers -> headers.disable());
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+        http.headers(headers -> headers.disable()); // Deshabilita las cabeceras de seguridad
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")); // Deshabilita CSRF para la consola H2
         return http.build();
     }
 
+    // Configura el servicio de detalles del usuario
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
             User user = this.userService.getUserByUsername(username);
             UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getUsername());
-            builder.password("{noop}" + user.getPassword());
+            builder.password("{noop}" + user.getPassword()); // No encripta la contraseña
             builder.authorities(user.getRole().toString());
             return builder.build();
         };
     }
 
+    // Maneja fallos de autenticación redirigiendo a la página de login con un mensaje de error
     @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
         return new SimpleUrlAuthenticationFailureHandler() {
@@ -72,4 +76,3 @@ public class SecurityConfiguration {
         };
     }
 }
-

@@ -5,8 +5,6 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -29,19 +27,19 @@ import com.dam.parcelmanagement.model.UserRole;
 import com.dam.parcelmanagement.service.DeliveryService;
 import com.dam.parcelmanagement.service.UserService;
 
-
 @Controller
 @RequestMapping("/deliveries")
 public class DeliveryController {
 
-    private final Logger log = LoggerFactory.getLogger(DeliveryController.class);
-
+    // Inyecta una instancia de DeliveryService para utilizar sus métodos
     @Autowired
     private DeliveryService deliveryService;
 
+    // Inyecta una instancia de UserService para utilizar sus métodos
     @Autowired
     private UserService userService;
 
+    // Método para verificar si el usuario está autenticado y tiene los roles adecuados
     private boolean isUserAuthenticated(Principal principal) {
         if (principal instanceof Authentication) {
             Authentication authentication = (Authentication) principal;
@@ -53,6 +51,7 @@ public class DeliveryController {
         return false;
     }
 
+    // Muestra la información de un envío específico
     @GetMapping("/view")
     public String viewDelivery(@RequestParam("deliveryId") String deliveryId, Principal principal, Model model, RedirectAttributes redirectAttributes) {
         boolean isAuthenticated = isUserAuthenticated(principal);
@@ -62,30 +61,29 @@ public class DeliveryController {
             model.addAttribute("deliveries", delivery);
             model.addAttribute("userAuthenticated", isAuthenticated);
             model.addAttribute("displayDetails", false);
-            log.info("Tracking delivery with id: " + deliveryId);
             return "delivery-view";
         } else {
             if (isAuthenticated) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Delivery not found");
+                redirectAttributes.addFlashAttribute("errorMessage", "No se encontró el envío con ID: " + deliveryId);
                 return "redirect:/dashboard";
             }
-            log.info("Invalid delivery id provided");
             model.addAttribute("errorMessage", "El envío no existe o no se encuentra disponible. Por favor, verifique el ID ingresado.");
             return "index";
         }
-    }    
+    }
 
+    // Redirige a la vista de detalles de un envío específico
     @PostMapping("/view")
     public String viewDelivery(@RequestParam String deliveryId, Model model) {
-        log.info("Tracking delivery with id: " + deliveryId);
         model.addAttribute("deliveryId", deliveryId);
         return "redirect:/deliveries/view?deliveryId=" + deliveryId;
     }
 
+    // Muestra los envíos de un usuario específico
+    // Sólo accesible para usuarios con roles 'ROLE_ADMIN' o 'ROLE_CUSTOMER'
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping("/{username}/view")
     public String viewUserDeliveries(Principal principal, @PathVariable String username, Model model) {
-        log.info("Showing deliveries for user: " + username);
         boolean isAuthenticated = isUserAuthenticated(principal);
         List<Delivery> deliveries = this.deliveryService.getDeliveriesByUsername(username);
         model.addAttribute("deliveries", deliveries);
@@ -94,10 +92,11 @@ public class DeliveryController {
         return "delivery-view";
     }
 
+    // Muestra los detalles de un envío específico
+    // Sólo accesible para usuarios con roles 'ROLE_ADMIN' o 'ROLE_CUSTOMER'
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping("/view/details")
-    public String viewDeliveryDetails (Principal principal, @RequestParam String deliveryId, Model model) {
-        log.info("Showing delivery details for delivery with id: " + deliveryId);
+    public String viewDeliveryDetails(Principal principal, @RequestParam String deliveryId, Model model) {
         boolean isAuthenticated = isUserAuthenticated(principal);
         Delivery delivery = this.deliveryService.getDeliveryById(Long.parseLong(deliveryId));
         model.addAttribute("deliveries", delivery);
@@ -106,10 +105,11 @@ public class DeliveryController {
         return "delivery-view";
     }
 
+    // Muestra el formulario para crear un nuevo envío
+    // Sólo accesible para usuarios con roles 'ROLE_ADMIN' o 'ROLE_CUSTOMER'
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping("/create")
     public String createDeliveryForm(Principal principal, Model model) {
-        log.info("Showing delivery creation form");
         Delivery delivery = new Delivery();
         delivery.setSource(new Address());
         delivery.setPacket(new Packet());
@@ -120,15 +120,14 @@ public class DeliveryController {
         return "delivery-new";
     }
 
+    // Procesa la creación de un nuevo envío
+    // Sólo accesible para usuarios con roles 'ROLE_ADMIN' o 'ROLE_CUSTOMER'
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @PostMapping("/create")
     public String createDelivery(Principal principal, @ModelAttribute Delivery delivery, Model model) throws ParseException {
-        log.info("Creating delivery");
         User user = this.userService.getUserByUsername(principal.getName());
         delivery.setSource(user.getAddress());
         this.deliveryService.createDelivery(delivery);
         return "redirect:/dashboard";
     }
-
-    
 }

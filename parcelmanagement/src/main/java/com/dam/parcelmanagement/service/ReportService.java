@@ -26,36 +26,27 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReportService {
 
+    // Inyecta una instancia de ReportRepository para acceder a las operaciones CRUD
     @Autowired
     private ReportRepository reportRepository;
 
+    // Inyecta una instancia de InvoiceService para gestionar facturas
     @Autowired
     private InvoiceService invoiceService;
 
+    // Inyecta una instancia de DeliveryService para gestionar entregas
     @Autowired
     private DeliveryService deliveryService;
 
+    // Inyecta una instancia de CommentService para gestionar comentarios
     @Autowired
     private CommentService commentService;
 
-    public List<Report> getAllReports() {
-        return this.reportRepository.findAll();
-    }
-
-    public Report getReportById(Long id) {
-        Optional<Report> report = this.reportRepository.findById(id);
-        if (report.isPresent()) {
-            return report.get();
-        } else {
-            return null;
-        }
-    }
-
+    // Crea un nuevo informe
     @Transactional
     public Report createReport() {
         Report report = new Report();
@@ -67,7 +58,7 @@ public class ReportService {
         }
         double averageRating = comments.isEmpty() ? 0.0 : totalRating / comments.size();
         report.setAverageRating(averageRating);
-    
+
         List<Invoice> invoices = this.invoiceService.getAllInvoices();
         double totalIncome = 0.0;
         for (Invoice invoice : invoices) {
@@ -79,88 +70,82 @@ public class ReportService {
         report.setNumberOfDeliveries(numberOfDeliveries);
 
         report.setDate(new Date());
-        
+
         return this.reportRepository.save(report);
     }
 
-    @Transactional
-    public void deleteReport(Long id) {
-        this.reportRepository.deleteById(id);
-    }
-
+    // Genera un PDF del informe
     public byte[] getReportPdf(Report report) throws IOException, DocumentException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, byteArrayOutputStream);
-    
+
         document.open();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    
+
         document.addTitle("Informe de Operaciones Actual");
         document.addSubject("Informe de Operaciones");
         document.addKeywords("informe, operaciones, estadísticas");
         document.addAuthor("Gestión de Paquetería");
         document.addCreator("Gestión de Paquetería");
-    
+
         Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
         Paragraph title = new Paragraph("Informe de Operaciones Actual", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
-    
+
         document.add(new Paragraph(" "));
-    
+
         Font sectionTitleFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
         Font textFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
-    
+
         document.add(new Paragraph("Fecha del Informe: " + dateFormat.format(new Date()), textFont));
         document.add(new Paragraph(" "));
-    
+
         Paragraph averageRatingTitle = new Paragraph("Calificación Promedio", sectionTitleFont);
         document.add(averageRatingTitle);
         document.add(new Paragraph("" + report.getAverageRating(), textFont));
         document.add(new Paragraph(" "));
-    
+
         Paragraph totalIncomeTitle = new Paragraph("Ingresos Totales", sectionTitleFont);
         document.add(totalIncomeTitle);
         document.add(new Paragraph("" + report.getTotalIncome(), textFont));
         document.add(new Paragraph(" "));
-    
+
         Paragraph numberOfDeliveriesTitle = new Paragraph("Número de Entregas", sectionTitleFont);
         document.add(numberOfDeliveriesTitle);
         document.add(new Paragraph("" + report.getNumberOfDeliveries(), textFont));
         document.add(new Paragraph(" "));
-    
+
         Paragraph commentsTitle = new Paragraph("Comentarios de los Clientes", sectionTitleFont);
         document.add(commentsTitle);
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10f);
         table.setSpacingAfter(10f);
-    
+
         PdfPCell cell1 = new PdfPCell(new Phrase("Fecha"));
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell1);
-    
+
         PdfPCell cell2 = new PdfPCell(new Phrase("Puntuación"));
         cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell2);
-    
+
         PdfPCell cell3 = new PdfPCell(new Phrase("Comentario"));
         cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell3);
-    
+
         for (Comment comment : commentService.getAllComments()) {
             table.addCell(dateFormat.format(comment.getDate()));
             table.addCell(comment.getRating().toString());
             table.addCell(comment.getDescription());
         }
-    
+
         document.add(table);
-    
+
         document.close();
-    
+
         return byteArrayOutputStream.toByteArray();
     }
-    
-    
 }
