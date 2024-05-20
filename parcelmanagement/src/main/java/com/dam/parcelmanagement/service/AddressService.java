@@ -1,6 +1,5 @@
 package com.dam.parcelmanagement.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +19,6 @@ public class AddressService {
 
     public Boolean existsById(Long id) {
         return this.addressRepository.existsById(id);
-    }
-
-    public List<Address> getAllAddresses() {
-        return this.addressRepository.findAll();
     }
 
     public Address getAddressById(Long id) {
@@ -74,12 +69,5 @@ public class AddressService {
         }
     }
 
-    @Transactional
-    public void deleteAddress(Long id) {
-        if (!this.addressRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Address not found with id: " + id);
-        }
-        this.addressRepository.deleteById(id);
-    }
     
 }

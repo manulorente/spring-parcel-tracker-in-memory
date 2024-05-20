@@ -42,6 +42,8 @@ public class SecurityConfiguration {
                     .failureHandler(customAuthenticationFailureHandler())
                     .permitAll())
             .logout(logout -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/index")
                     .permitAll());
         http.headers(headers -> headers.disable());
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));

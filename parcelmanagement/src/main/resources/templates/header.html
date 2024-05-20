@@ -16,7 +16,7 @@
     <header class="header" data-header>
 		<div class="container">
 			<h1>
-				<a href="#" class="logo">Transportes Lorente</a>
+				<a href="/" class="logo">Transportes Lorente</a>
 			</h1>
 			<nav class="navbar" data-navbar>
 				<div class="navbar-top">
@@ -47,7 +47,13 @@
 					</li>
 					<li class="navbar-item">
 						<a th:href="@{/comments/view}" class="navbar-link" data-nav-link>
-							<span>Nuestros clientes</span>
+							<span>Valoraciones</span>
+							<ion-icon name="chevron-forward"></ion-icon>
+						</a>
+					</li>	
+					<li class="navbar-item">
+						<a th:href="@{/dashboard}" class="navbar-link" data-nav-link>
+							<span>Portal del cliente</span>
 							<ion-icon name="chevron-forward"></ion-icon>
 						</a>
 					</li>					

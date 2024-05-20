@@ -33,7 +33,13 @@ public class AuthController {
         model.addAttribute("user", new Customer());
         return "login";
     }
-    
+
+    @GetMapping("/logout")
+    public String logout() {
+        log.info("User logged out");
+        return "redirect:/login";
+    }
+
     @GetMapping("/register")
     public String showRegistrationForm(Principal principal, Model model) {
         log.info("Register page accessed");

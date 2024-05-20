@@ -142,7 +142,7 @@ public class DeliveryService {
 
     private Invoice createInvoice(Delivery delivery, Double price) {
         Invoice invoice = new Invoice();
-        invoice.setServiceInfo("Delivery from " + delivery.getSource() + " to " + delivery.getDestination());
+        invoice.setServiceInfo("Envío de " + delivery.getPacket().getPacketType() + " a " + delivery.getDestination().getCity() + ", " + delivery.getDestination().getCountry());
         invoice.setPrice(price);
         invoice.setTax(0.1);
         invoice.setTotal(price * (1 + 0.1));

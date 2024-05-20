@@ -53,6 +53,7 @@
         </div>
     </form>
     <form th:action="@{'/users'}" method="get" style="display:inline">
+        <input type="hidden" name="username" th:value="${user.username}" />
         <button type="submit">Cancel</button>
     </form>
 </body>

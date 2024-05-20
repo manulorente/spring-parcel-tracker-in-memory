@@ -55,7 +55,7 @@ public class UserController {
         log.info("Creating user");
         Boolean usernameExists = this.userService.existsUserByUsername(userDetails.getUsername());
         if (usernameExists) {
-            model.addAttribute("errorMessage", "User already exists");
+            model.addAttribute("errorMessage", "El nombre de usuario ya existe. Por favor, elija otro.");
             model.addAttribute("user", new Customer());
             model.addAttribute("isUserAdmin", isUserAdmin(principal));
             return "user-new";
@@ -85,11 +85,9 @@ public class UserController {
     @PostMapping("/{username}/edit")
     public String updateUser(@PathVariable String username, Principal principal, @ModelAttribute Customer userDetails, Model model) {
         log.info("Updating user");
-        if (!isUserAdmin(principal)) {
-            User user = this.userService.getUserByUsername(username);
-            user.setAddress(userDetails.getAddress());
-            user.setPassword(userDetails.getPassword());
-        }
+        User user = this.userService.getUserByUsername(username);
+        user.setAddress(userDetails.getAddress());
+        user.setPassword(userDetails.getPassword());
         this.userService.updateUser(userDetails);
         return "redirect:/dashboard";
     }

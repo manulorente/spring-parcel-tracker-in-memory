@@ -621,11 +621,17 @@ body {
 
 .feature-card .card-btn {
   color: var(--prussian-blue);
-  font-size: 24px;
+  font-size: 16px;
   border: 2px solid var(--prussian-blue);
   max-width: max-content;
   margin-inline: auto;
-  padding: 10px 18px;
+  padding: 5px 9px;
+}
+
+.card-btn:is(:hover, :focus) {
+  background-color: var(--dark-orange);
+  border: 2px solid var(--prussian-blue);
+  color: var(--white);
 }
 
 
@@ -1410,4 +1416,29 @@ body {
     gap: 10px;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.custom-textarea {
+  width: 600px;
+  height: 150px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.form-group input {
+  flex: 2;
+}
+
+.form-group span {
+  margin-left: 1rem;
+  white-space: nowrap;
 }

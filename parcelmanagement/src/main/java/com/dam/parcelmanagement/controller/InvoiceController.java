@@ -25,7 +25,7 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping("/{invoiceId}/view-pdf")
     public void viewInvoicePdf(HttpServletResponse response, @PathVariable String invoiceId) throws IOException, DocumentException{
         log.info("View invoice PDF with id: " + invoiceId);

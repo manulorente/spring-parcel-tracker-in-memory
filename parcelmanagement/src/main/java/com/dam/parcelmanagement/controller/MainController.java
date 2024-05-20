@@ -51,7 +51,7 @@ public class MainController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping({"/dashboard"})
-    public String getUsers(Principal principal, Model model) {
+    public String viewDashboard(Principal principal, Model model) {
         log.info("Accessing dashboard");
         String username = this.userService.getUserByUsername(principal.getName()).getUsername();
         List<Delivery> deliveries = this.deliveryService.getDeliveriesByUsername(username);

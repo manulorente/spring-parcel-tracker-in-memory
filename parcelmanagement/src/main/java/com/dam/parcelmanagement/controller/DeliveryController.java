@@ -70,7 +70,7 @@ public class DeliveryController {
                 return "redirect:/dashboard";
             }
             log.info("Invalid delivery id provided");
-            model.addAttribute("errorMessage", "Delivery not found");
+            model.addAttribute("errorMessage", "El envío no existe o no se encuentra disponible. Por favor, verifique el ID ingresado.");
             return "index";
         }
     }    

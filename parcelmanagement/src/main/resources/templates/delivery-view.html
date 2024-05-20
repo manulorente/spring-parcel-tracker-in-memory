@@ -33,7 +33,7 @@
             <section class="section delivery-details" id="delivery-details" aria-label="delivery-details">
                 <div class="container">
                     <h2 class="h2 section-title">Información del Envío</h2>
-                    <div th:if="${!userAuthenticated}">
+                    <div th:if="${!userAuthenticated}" class="button-container">
                         <a href="/login" type="submit" class="btn-outline">Inicie sesión para ver detalles</a>
                     </div>
                     <table class="table">
@@ -56,22 +56,24 @@
                                 <td th:text="${delivery.status}"></td>
                                 <div th:if="${userAuthenticated}">
                                     <td>
-                                        <form th:action="@{'/deliveries/view/details'}" method="get" style="display:inline">
-                                            <input type="hidden" name="deliveryId" th:value="${delivery.id}" />
-                                            <button type="submit" class="btn btn-outline">Detalles</button>
-                                        </form>
-                                        <form th:action="@{'/invoices/' + ${delivery.invoice.id} + '/view-pdf'}" method="get" style="display:inline">
-                                            <button type="submit" class="btn btn-outline">Factura</button>
-                                        </form>
+                                        <div class="button-container">
+                                            <form th:action="@{'/deliveries/view/details'}" method="get">
+                                                <input type="hidden" name="deliveryId" th:value="${delivery.id}" />
+                                                <button type="submit" class="btn-outline">Detalles</button>
+                                            </form>
+                                            <form th:action="@{'/invoices/' + ${delivery.invoice.id} + '/view-pdf'}" method="get">
+                                                <button type="submit" class="btn-outline">Factura</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </div>
                             </tr>
                         </tbody>
                     </table>
-
                     <div th:if="${userAuthenticated}">
                         <div th:if="${displayDetails}">
                             <div th:each="delivery : ${deliveries}">
+                                <br>
                                 <h3 class="h3">Información del Paquete</h3>
                                 <table class="table">
                                     <thead>
@@ -95,7 +97,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                
+                                <br>
                                 <h3 class="h3">Dirección de Origen</h3>
                                 <table class="table">
                                     <thead>
@@ -121,7 +123,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                <br>
                                 <h3 class="h3">Dirección de Destino</h3>
                                 <table class="table">
                                     <thead>

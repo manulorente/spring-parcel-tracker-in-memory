@@ -17,11 +17,11 @@
 						</h2>
 
 						<p class="hero-text">
-							Somos una empresa de transporte que nos encargamos del envio de
+							Somos una empresa de logística que nos encargamos del envio de
 							paqueteria.
 						</p>
 
-						<a href="#service" class="btn-outline">Ver servicios</a>
+						<a href="#service" class="btn-outline" style="background-color: hsl(32, 100%, 50%);">Ver servicios</a>
 					</div>
 				</div>
 			</section>
@@ -119,11 +119,13 @@
 								<p class="card-text">
 									Introduce el numero de seguimiento de tu envío para localizarlo.
 								</p>
-
+								<div th:if="${errorMessage}">
+									<p th:style="'color: red;'" th:text="${errorMessage}"></p>
+								</div>
 									<form th:action="@{/deliveries/view}" method="post" class="navbar-link" data-nav-link>
 										<label for="deliveryId"></label>
 										<input class="input-text" type="text" id="deliveryId" placeholder="ID" name="deliveryId" required>
-										<button class="card-btn" type="submit"> SEGUIR</button>
+										<button class="card-btn" type="submit">Localizar</button>
 										<ion-icon name="chevron-forward"></ion-icon>
 									</form>
 							</div>

@@ -26,7 +26,7 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping("/create")
     public void createReport(HttpServletResponse response) throws IOException, DocumentException{
         log.info("View latest report in PDF");
