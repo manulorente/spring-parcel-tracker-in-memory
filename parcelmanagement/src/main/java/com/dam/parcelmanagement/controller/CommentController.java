@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import com.dam.parcelmanagement.service.CommentService;
 import com.dam.parcelmanagement.model.Comment;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller

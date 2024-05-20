@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:fragment="title">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Transporte</title>
+    <link rel="shortcut icon" th:href="@{/favicon.svg}" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/js/script.js}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body id="top" th:fragment="header">
+    <header class="header" data-header>
+		<div class="container">
+			<h1>
+				<a href="#" class="logo">Transportes Lorente</a>
+			</h1>
+			<nav class="navbar" data-navbar>
+				<div class="navbar-top">
+					<a th:href="@{/}" class="logo">Transportes Lorente</a>
+					<button class="nav-close-btn" aria-label="Close menu" data-nav-toggler>
+						<ion-icon name="close-outline"></ion-icon>
+					</button>
+				</div>
+
+				<ul class="navbar-list">
+					<li class="navbar-item">
+						<a href="/index" class="navbar-link" data-nav-link>
+							<span>Inicio</span>
+							<ion-icon name="chevron-forward"></ion-icon>
+						</a>
+					</li>
+					<li class="navbar-item">
+						<a href="/index#about" class="navbar-link" data-nav-link>
+							<span>Nosotros</span>
+							<ion-icon name="chevron-forward"></ion-icon>
+						</a>
+					</li>
+					<li class="navbar-item">
+						<a href="/index#service" class="navbar-link" data-nav-link>
+							<span>Servicios</span>
+							<ion-icon name="chevron-forward"></ion-icon>
+						</a>
+					</li>
+					<li class="navbar-item">
+						<a th:href="@{/comments/view}" class="navbar-link" data-nav-link>
+							<span>Nuestros clientes</span>
+							<ion-icon name="chevron-forward"></ion-icon>
+						</a>
+					</li>					
+				</ul>
+			</nav>
+			<div class="overlay" data-nav-toggler data-overlay>
+			</div>
+		</div>
+	</header>
+</body>
+</html>

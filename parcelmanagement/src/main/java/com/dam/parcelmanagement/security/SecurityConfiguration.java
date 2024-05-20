@@ -32,7 +32,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(requests -> requests
-                    .requestMatchers("/", "/index", "/h2-console/**", "/login", "/register").permitAll()
+                    .requestMatchers("/h2-console/**", "/css/**", "/js/**", "/img/**").permitAll()
+                    .requestMatchers("/", "/index", "/login", "/register").permitAll() 
                     .requestMatchers("/deliveries/**", "/users/**", "/invoices/**", "/reports/**", "/comments/**").permitAll()
                     .anyRequest().authenticated())
             .formLogin(login -> login
@@ -44,7 +45,7 @@ public class SecurityConfiguration {
                     .permitAll());
         http.headers(headers -> headers.disable());
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
-  return http.build();
+        return http.build();
     }
 
     @Bean

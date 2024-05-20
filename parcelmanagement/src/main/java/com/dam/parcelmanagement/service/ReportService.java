@@ -92,75 +92,75 @@ public class ReportService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, byteArrayOutputStream);
-
+    
         document.open();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        
-        document.addTitle("Current Operations Report");
-        document.addSubject("Operations Report");
-        document.addKeywords("report, operations, statistics");
-        document.addAuthor("Parcel Management");
-        document.addCreator("Parcel Management");
-
+    
+        document.addTitle("Informe de Operaciones Actual");
+        document.addSubject("Informe de Operaciones");
+        document.addKeywords("informe, operaciones, estadísticas");
+        document.addAuthor("Gestión de Paquetería");
+        document.addCreator("Gestión de Paquetería");
+    
         Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-        Paragraph title = new Paragraph("Current Operations Report", titleFont);
+        Paragraph title = new Paragraph("Informe de Operaciones Actual", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
-        
+    
         document.add(new Paragraph(" "));
-
+    
         Font sectionTitleFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
         Font textFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
-
-        document.add(new Paragraph("Report Date: " + dateFormat.format(new Date()), textFont));
+    
+        document.add(new Paragraph("Fecha del Informe: " + dateFormat.format(new Date()), textFont));
         document.add(new Paragraph(" "));
-
-        Paragraph averageRatingTitle = new Paragraph("Average Rating", sectionTitleFont);
+    
+        Paragraph averageRatingTitle = new Paragraph("Calificación Promedio", sectionTitleFont);
         document.add(averageRatingTitle);
         document.add(new Paragraph("" + report.getAverageRating(), textFont));
         document.add(new Paragraph(" "));
-
-        Paragraph totalIncomeTitle = new Paragraph("Total Income", sectionTitleFont);
+    
+        Paragraph totalIncomeTitle = new Paragraph("Ingresos Totales", sectionTitleFont);
         document.add(totalIncomeTitle);
         document.add(new Paragraph("" + report.getTotalIncome(), textFont));
         document.add(new Paragraph(" "));
-
-        Paragraph numberOfDeliveriesTitle = new Paragraph("Number of Deliveries", sectionTitleFont);
+    
+        Paragraph numberOfDeliveriesTitle = new Paragraph("Número de Entregas", sectionTitleFont);
         document.add(numberOfDeliveriesTitle);
         document.add(new Paragraph("" + report.getNumberOfDeliveries(), textFont));
         document.add(new Paragraph(" "));
-
-        Paragraph commentsTitle = new Paragraph("Customer Comments", sectionTitleFont);
+    
+        Paragraph commentsTitle = new Paragraph("Comentarios de los Clientes", sectionTitleFont);
         document.add(commentsTitle);
-        PdfPTable table = new PdfPTable(2);
+        PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10f);
         table.setSpacingAfter(10f);
-
-        PdfPCell cell1 = new PdfPCell(new Phrase("Date"));
+    
+        PdfPCell cell1 = new PdfPCell(new Phrase("Fecha"));
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell1);
-
-        PdfPCell cell2 = new PdfPCell(new Phrase("Rating"));
+    
+        PdfPCell cell2 = new PdfPCell(new Phrase("Puntuación"));
         cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell2);
-
-        PdfPCell cell3 = new PdfPCell(new Phrase("Comment"));
+    
+        PdfPCell cell3 = new PdfPCell(new Phrase("Comentario"));
         cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell3);
-
+    
         for (Comment comment : commentService.getAllComments()) {
             table.addCell(dateFormat.format(comment.getDate()));
             table.addCell(comment.getRating().toString());
             table.addCell(comment.getDescription());
         }
-
+    
         document.add(table);
-
+    
         document.close();
-
+    
         return byteArrayOutputStream.toByteArray();
-
     }
+    
     
 }

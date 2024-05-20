@@ -13,18 +13,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.dam.parcelmanagement.model.Delivery;
 import com.dam.parcelmanagement.model.User;
 import com.dam.parcelmanagement.model.UserRole;
+import com.dam.parcelmanagement.service.DeliveryService;
 import com.dam.parcelmanagement.service.UserService;
 
 
 @Controller
-public class LandingController {
+public class MainController {
 
-    private final Logger log = LoggerFactory.getLogger(LandingController.class);
+    private final Logger log = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DeliveryService deliveryService;
 
     private boolean isUserAdmin(Principal principal) {
         if (principal instanceof Authentication) {
@@ -47,9 +52,11 @@ public class LandingController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @GetMapping({"/dashboard"})
     public String getUsers(Principal principal, Model model) {
-        log.info("Getting users information");
+        log.info("Accessing dashboard");
         String username = this.userService.getUserByUsername(principal.getName()).getUsername();
+        List<Delivery> deliveries = this.deliveryService.getDeliveriesByUsername(username);
         model.addAttribute("username", username);
+        model.addAttribute("deliveries", deliveries);
         if (isUserAdmin(principal)) {
             List<User> users = userService.getAllUsers();
             model.addAttribute("useradmin", true);

@@ -1,76 +1,177 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="shortcut icon" th:href="@{/favicon.svg}" type="image/svg+xml" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>
-    <h1>Welcome, <span th:text="${username}">User</span></h1>
-    
-    <div>
-        <form th:action="@{/deliveries/create}" method="get">
-            <button type="submit">Create Delivery</button>
-        </form>
-        <form th:action="@{/comments/create}" method="get">
-            <button type="submit">Rate the Service</button>
-        </form>
-    </div>
 
-    <div th:if="${useradmin}">
-        <form th:action="@{/users/create}" method="get">
-            <button type="submit">Create New User</button>
-        </form>
-        <form th:action="@{/reports/create}" method="get">
-            <button type="submit">Generate Report</button>
-        </form>
-    </div>
-    
-    <div>
-        <form th:action="@{/deliveries/view}" method="post">
-            <input type="text" name="deliveryId" placeholder="Enter Delivery ID" required>
-            <button type="submit">View Status</button>
-        </form>
-        <form th:action="@{'/deliveries/' + ${username} + '/view'}" method="get">
-            <button type="submit">View All My Deliveries</button>
-        </form>
-    </div>
+<body id="top">
+    <header th:replace="header :: header"></header>
 
-    <div th:if="${errorMessage}">
-        <p th:style="'color: red;'" th:text="${errorMessage}"></p>
-    </div>
-    
-    <h2>Users</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Password</th>
-            <th>Role</th>
-            <th>Email</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Address</th>
-            <th>Actions</th>
-        </tr>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.id}"></td>
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.password}"></td>
-            <td th:text="${user.role}"></td>
-            <td th:text="${user.address.email}"></td>
-            <td th:text="${user.address.firstName}"></td>
-            <td th:text="${user.address.lastName}"></td>
-            <td th:text="${user.address.street + ', ' + user.address.city + ' ' + user.address.zipCode + ' ' + user.address.country}"></td>
-            <td>
-                <form th:action="@{'/users/' + ${user.username} + '/edit'}" method="get">
-                    <button type="submit">Edit</button>
-                </form>
-                <form th:if="${user.username != username}" th:action="@{'/users/' + ${user.username} + '/delete'}" method="post">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-    </table>
+    <main>
+        <section class="section hero" aria-label="home" id="home"
+            th:style="'background-image: url(' + @{/img/hero-banner.jpg} + ')'">
+            <div class="container">
+                <div class="hero-content">
+                    <h2 class="h1 hero-title">
+                        <span class="span">Bienvenido, <span th:text="${username}">Usuario</span></span>
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dashboard" id="dashboard" aria-label="dashboard">
+            <div class="container">
+                <h2 class="h2 section-title">Acciones Rápidas</h2>
+                <div class="button-container">
+                    <form th:action="@{/deliveries/create}" method="get">
+                        <button type="submit" class="btn-outline">Crear Envío</button>
+                    </form>
+                    <br>
+                    <form th:action="@{/comments/create}" method="get">
+                        <button type="submit" class="btn-outline">Valorar Servicio</button>
+                    </form>
+                </div>
+                <br>
+                <br>
+                <h2 class="h2 section-title">Perfil de usuario</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Contraseña</th>
+                            <th>Rol</th>
+                            <th>Email</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <div th:if="${user.username == username}" >
+                                <td th:text="${user.id}"></td>
+                                <td th:text="${user.username}"></td>
+                                <td th:text="${user.password}"></td>
+                                <td th:text="${user.role}"></td>
+                                <td th:text="${user.address.email}"></td>
+                                <td th:text="${user.address.firstName}"></td>
+                                <td th:text="${user.address.lastName}"></td>
+                                <td th:text="${user.address.street + ', ' + user.address.city + ' ' + user.address.zipCode + ' ' + user.address.country}"></td>
+                                <td>
+                                    <form th:action="@{'/users/' + ${user.username} + '/edit'}" method="get">
+                                        <button type="submit" class="btn-outline">Editar</button>
+                                    </form>
+                                </td>
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="h2 section-title">Mis envíos</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha de Creación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="delivery : ${deliveries}">
+                            <td th:text="${delivery.id}"></td>
+                            <td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${delivery.status}"></td>
+                            <td>
+                                <div class="button-container">
+                                    <form th:action="@{'/deliveries/' + ${delivery.id} + '/view'}" method="get">
+                                        <button type="submit" class="btn-outline">Detalles</button>
+                                    </form>
+                                    <form th:if="${delivery.invoice != null}" th:action="@{'/invoices/' + ${delivery.invoice.id} + '/view-pdf'}" method="get">
+                                        <button type="submit" class="btn-outline">Factura</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <br>
+                <div th:if="${useradmin}">
+                    <h2 class="h2 section-title">Administración</h2>
+                    <div class="button-container">
+                        <form th:action="@{/users/create}" method="get">
+                            <button type="submit" class="btn-outline">Crear Nuevo Usuario</button>
+                        </form>
+                        <form th:action="@{/reports/create}" method="get">
+                            <button type="submit" class="btn-outline">Generar Reporte</button>
+                        </form>
+                    </div>
+
+                    <div th:if="${errorMessage}">
+                        <p th:style="'color: red;'" th:text="${errorMessage}"></p>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Contraseña</th>
+                                <th>Rol</th>
+                                <th>Email</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Dirección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:text="${user.id}"></td>
+                                <td th:text="${user.username}"></td>
+                                <td th:text="${user.password}"></td>
+                                <td th:text="${user.role}"></td>
+                                <td th:text="${user.address.email}"></td>
+                                <td th:text="${user.address.firstName}"></td>
+                                <td th:text="${user.address.lastName}"></td>
+                                <td th:text="${user.address.street + ', ' + user.address.city + ' ' + user.address.zipCode + ' ' + user.address.country}" ></td>
+                                <td>
+                                    <div class="button-container">
+                                        <form th:action="@{'/users/' + ${user.username} + '/edit'}" method="get" style="display:inline">
+                                            <button type="submit" class="btn-outline">Editar</button>
+                                        </form>
+                                        <form th:if="${user.username != username}" th:action="@{'/users/' + ${user.username} + '/delete'}" method="post" style="display:inline">
+                                            <button type="submit" class="btn-outline">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer th:replace="footer :: footer"></footer>
+
+    <a href="#top" class="back-top-btn" aria-label="Back to top" data-back-top-btn>
+        <ion-icon name="chevron-up"></ion-icon>
+    </a>
+    <script src="./js/script.js" defer></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
+
 </html>

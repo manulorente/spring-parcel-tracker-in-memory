@@ -1,177 +1,168 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Delivery Status</title>
+
+    <link rel="shortcut icon" th:href="@{/favicon.svg}" type="image/svg+xml" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>
-    <h1>Delivery Details</h1>
-    
-    <div>
-        <h2>Delivery Information</h2>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Delivery Date</th>
-                    <th>Estimated Arrival Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="delivery : ${deliveries}">
-                    <td th:text="${delivery.id}"></td>
-                    <td th:text="${#dates.format(delivery.deliveryDate, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${#dates.format(delivery.estimatedArrivalDate, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${delivery.status}"></td>
+
+<body id="top">
+    <header th:replace="header :: header"></header>
+
+    <main>
+        <article>
+            <section class="section hero" aria-label="home" id="home"
+                th:style="'background-image: url(' + @{/img/hero-banner.jpg} + ')'">
+                <div class="container">
+                    <div class="hero-content">
+                        <h2 class="h1 hero-title">
+                            <span class="span">Detalles de la entrega</span>
+                        </h2>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section delivery-details" id="delivery-details" aria-label="delivery-details">
+                <div class="container">
+                    <h2 class="h2 section-title">Información del Envío</h2>
+                    <div th:if="${!userAuthenticated}">
+                        <a href="/login" type="submit" class="btn-outline">Inicie sesión para ver detalles</a>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha de Envío</th>
+                                <th>Fecha Estimada de Llegada</th>
+                                <th>Estado</th>
+                                <div th:if="${userAuthenticated}">
+                                    <th>Acciones</th>
+                                </div>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="delivery : ${deliveries}">
+                                <td th:text="${delivery.id}"></td>
+                                <td th:text="${#dates.format(delivery.deliveryDate, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${#dates.format(delivery.estimatedArrivalDate, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${delivery.status}"></td>
+                                <div th:if="${userAuthenticated}">
+                                    <td>
+                                        <form th:action="@{'/deliveries/view/details'}" method="get" style="display:inline">
+                                            <input type="hidden" name="deliveryId" th:value="${delivery.id}" />
+                                            <button type="submit" class="btn btn-outline">Detalles</button>
+                                        </form>
+                                        <form th:action="@{'/invoices/' + ${delivery.invoice.id} + '/view-pdf'}" method="get" style="display:inline">
+                                            <button type="submit" class="btn btn-outline">Factura</button>
+                                        </form>
+                                    </td>
+                                </div>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <div th:if="${userAuthenticated}">
-                        <td>
-                            <form th:action="@{'/deliveries/view/details'}" method="get" style="display:inline">
-                                <input type="hidden" name="deliveryId" th:value="${delivery.id}" />
-                                <button type="submit">Details</button>
-                            </form>   
-                            <form th:action="@{'/invoices/' + ${delivery.invoice.id} + '/view-pdf'}" method="get" style="display:inline">
-                                <button type="submit">Invoice</button>
-                            </form>                           
-                        </td>
-                    </div>  
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                        <div th:if="${displayDetails}">
+                            <div th:each="delivery : ${deliveries}">
+                                <h3 class="h3">Información del Paquete</h3>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Peso</th>
+                                            <th>Altura</th>
+                                            <th>Ancho</th>
+                                            <th>Longitud</th>
+                                            <th>Transporte</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td th:text="${delivery.packet.packetType}"></td>
+                                            <td th:text="${delivery.packet.packetWeight}"></td>
+                                            <td th:text="${delivery.packet.packetHeight}"></td>
+                                            <td th:text="${delivery.packet.packetWidth}"></td>
+                                            <td th:text="${delivery.packet.packetLength}"></td>
+                                            <td th:text="${delivery.transportation}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <h3 class="h3">Dirección de Origen</h3>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Email</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                            <th>Calle</th>
+                                            <th>Ciudad</th>
+                                            <th>Código Postal</th>
+                                            <th>País</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td th:text="${delivery.source.email}"></td>
+                                            <td th:text="${delivery.source.firstName}"></td>
+                                            <td th:text="${delivery.source.lastName}"></td>
+                                            <td th:text="${delivery.source.street}"></td>
+                                            <td th:text="${delivery.source.city}"></td>
+                                            <td th:text="${delivery.source.zipCode}"></td>
+                                            <td th:text="${delivery.source.country}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-    <div th:if="${userAuthenticated}">
-        <div th:if="${displayDetails}">
-            <div th:each="delivery : ${deliveries}">
-                <h3>Packet Information</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Weight</th>
-                            <th>Height</th>
-                            <th>Width</th>
-                            <th>Length</th>
-                            <th>Transportation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td th:text="${delivery.packet.packetType}"></td>
-                            <td th:text="${delivery.packet.packetWeight}"></td>
-                            <td th:text="${delivery.packet.packetHeight}"></td>
-                            <td th:text="${delivery.packet.packetWidth}"></td>
-                            <td th:text="${delivery.packet.packetLength}"></td>
-                            <td th:text="${delivery.transportation}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <h3>Source Address</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Street</th>
-                            <th>City</th>
-                            <th>Zip Code</th>
-                            <th>Country</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td th:text="${delivery.source.email}"></td>
-                            <td th:text="${delivery.source.firstName}"></td>
-                            <td th:text="${delivery.source.lastName}"></td>
-                            <td th:text="${delivery.source.street}"></td>
-                            <td th:text="${delivery.source.city}"></td>
-                            <td th:text="${delivery.source.zipCode}"></td>
-                            <td th:text="${delivery.source.country}"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <h3 class="h3">Dirección de Destino</h3>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Email</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                            <th>Calle</th>
+                                            <th>Ciudad</th>
+                                            <th>Código Postal</th>
+                                            <th>País</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td th:text="${delivery.destination.email}"></td>
+                                            <td th:text="${delivery.destination.firstName}"></td>
+                                            <td th:text="${delivery.destination.lastName}"></td>
+                                            <td th:text="${delivery.destination.street}"></td>
+                                            <td th:text="${delivery.destination.city}"></td>
+                                            <td th:text="${delivery.destination.zipCode}"></td>
+                                            <td th:text="${delivery.destination.country}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
 
-                <h3>Destination Address</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Street</th>
-                            <th>City</th>
-                            <th>Zip Code</th>
-                            <th>Country</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td th:text="${delivery.destination.email}"></td>
-                            <td th:text="${delivery.destination.firstName}"></td>
-                            <td th:text="${delivery.destination.lastName}"></td>
-                            <td th:text="${delivery.destination.street}"></td>
-                            <td th:text="${delivery.destination.city}"></td>
-                            <td th:text="${delivery.destination.zipCode}"></td>
-                            <td th:text="${delivery.destination.country}"></td>
-                        </tr>
-                    </tbody>
-                </table>
+    <footer th:replace="footer :: footer"></footer>
 
-                <h3>Invoice Information</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Price</th>
-                            <th>Tax</th>
-                            <th>Date</th>
-                            <th>Due Date</th>
-                            <th>Total</th>
-                            <th>Service Info</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td th:text="${delivery.invoice.price}"></td>
-                            <td th:text="${delivery.invoice.tax}"></td>
-                            <td th:text="${#dates.format(delivery.invoice.date, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${#dates.format(delivery.invoice.dueDate, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${delivery.invoice.total}"></td>
-                            <td th:text="${delivery.invoice.serviceInfo}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>Customer Information</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Street</th>
-                            <th>City</th>
-                            <th>Zip Code</th>
-                            <th>Country</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td th:text="${delivery.invoice.customerInfo.email}"></td>
-                            <td th:text="${delivery.invoice.customerInfo.firstName}"></td>
-                            <td th:text="${delivery.invoice.customerInfo.lastName}"></td>
-                            <td th:text="${delivery.invoice.customerInfo.street}"></td>
-                            <td th:text="${delivery.invoice.customerInfo.city}"></td>
-                            <td th:text="${delivery.invoice.customerInfo.zipCode}"></td>
-                            <td th:text="${delivery.invoice.customerInfo.country}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>   
-    </div>
+    <a href="#top" class="back-top-btn" aria-label="Back to top" data-back-top-btn>
+        <ion-icon name="chevron-up"></ion-icon>
+    </a>
+    <script src="./js/script.js" defer></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
+
 </html>
