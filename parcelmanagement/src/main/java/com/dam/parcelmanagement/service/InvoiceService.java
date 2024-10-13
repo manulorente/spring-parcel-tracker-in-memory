@@ -70,7 +70,7 @@ public class InvoiceService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Font headerFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD);
-        Paragraph header = new Paragraph("TRANSPORTES LORENTE - FACTURA", headerFont);
+        Paragraph header = new Paragraph("TRANSPORTES ARAPAHOE - FACTURA", headerFont);
         header.setAlignment(Element.ALIGN_CENTER);
         document.add(header);
 
